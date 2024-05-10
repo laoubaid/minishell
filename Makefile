@@ -5,7 +5,7 @@ COMPILER = cc
 # FLAGS = -Wall -Wextra -Werror
 FLAGS = -g
 
-SRCS = src/minishell.c src/parser.c src/input.c
+SRCS = src/minishell.c src/parser.c src/input.c src/tokenizer.c src/signals.c
 
 LIBFT = libft/libft.a
 
