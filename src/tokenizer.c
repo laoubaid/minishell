@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 23:51:55 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/05/09 23:53:38 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:03:19 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,25 @@ void	clean_tokens(t_token *token, int exit_process)
 		free(previous);
 	}
 	if (exit_process)
-		exit(1);
+		exit(exit_process);
+}
+
+int	key_word(char *input)
+{
+	if (!ft_memcmp(input, ">>", 2)
+		|| !ft_memcmp(input, "<<", 2)
+		|| !ft_memcmp(input, "&&", 2)
+		|| !ft_memcmp(input, "||", 2)
+		|| *input == '|'
+		|| *input == '>'
+		|| *input == '<'
+		|| *input == '('
+		|| *input == ')'
+		|| *input == '"'
+		|| *input == '\'')
+		return (1);
+	else
+		return (0);
 }
 
 t_token	*new_token(t_type type, char *content, t_token *previous)
@@ -35,8 +53,9 @@ t_token	*new_token(t_type type, char *content, t_token *previous)
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->content = content;
 	token->type = type;
+	token->content = content;
+	token->prec = 0;
 	token->previous = previous;
 	token->next = NULL;
 	return (token);
@@ -62,10 +81,16 @@ void	append_token(t_token *head, t_token **last, t_type type, char *content)
 void	special_token(char **input, t_token *head, t_token **last, t_type type)
 {
 	append_token(head, last, type, NULL);
-	if (type == PIPE || type == GREAT || type == LESS)
+	if (type == PIPE || type == GREAT || type == LESS || type == RPAREN || type == LPAREN)
 		(*input)++;
 	else
 		(*input) += 2;
+	if (type == OR)
+		(*last)->prec = 1;
+	else if (type == AND)
+		(*last)->prec = 2;
+	else if (type == PIPE)
+		(*last)->prec = 3;
 }
 
 void	quote_token(char **input, t_token *head, t_token **last, char quote)
@@ -100,7 +125,7 @@ void	word_token(char **input, t_token *head, t_token **last)
 
 	len = 0;
 	while ((*input)[len] != '\n' && (*input)[len] != ' '
-		&& (*input)[len] != '\t')
+		&& (*input)[len] != '\t' && !key_word(*input + len))
 		len++;
 	if (!len)
 		return ;
@@ -114,9 +139,9 @@ void	word_token(char **input, t_token *head, t_token **last)
 void	get_token(char **input, t_token *tokens, t_token **last)
 {
 	if (!ft_memcmp(*input, ">>", 2))
-		special_token(input, tokens, last, GGREAT);
+		special_token(input, tokens, last, DGREAT);
 	else if (!ft_memcmp(*input, "<<", 2))
-		special_token(input, tokens, last, LLESS);
+		special_token(input, tokens, last, DLESS);
 	else if (!ft_memcmp(*input, "&&", 2))
 		special_token(input, tokens, last, AND);
 	else if (!ft_memcmp(*input, "||", 2))
@@ -127,6 +152,10 @@ void	get_token(char **input, t_token *tokens, t_token **last)
 		special_token(input, tokens, last, GREAT);
 	else if (**input == '<')
 		special_token(input, tokens, last, LESS);
+	else if (**input == '(')
+		special_token(input, tokens, last, LPAREN);
+	else if (**input == ')')
+		special_token(input, tokens, last, RPAREN);
 	else if (**input == '"')
 		quote_token(input, tokens, last, '"');
 	else if (**input == '\'')
@@ -134,25 +163,6 @@ void	get_token(char **input, t_token *tokens, t_token **last)
 	else
 		word_token(input, tokens, last);
 }
-
-// t_token	*tokenizer(char *input)
-// {
-// 	t_token	*tokens;
-// 	t_token	*last;
-
-// 	tokens = NULL;
-// 	last = NULL;
-// 	while (*input != '\n')
-// 	{
-// 		while (*input == ' ' || *input == '\t')
-// 			input++;
-// 		get_token(input, tokens, &last);
-// 		if (!tokens)
-// 			tokens = last;
-// 	}
-// 	return (tokens);
-// }
-
 
 t_token	*tokenizer(char *input)
 {
