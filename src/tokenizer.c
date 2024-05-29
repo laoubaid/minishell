@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 23:51:55 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/05/26 17:03:19 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/05/29 23:45:35 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void	special_token(char **input, t_token *head, t_token **last, t_type type)
 	if (type == OR)
 		(*last)->prec = 1;
 	else if (type == AND)
-		(*last)->prec = 2;
+		(*last)->prec = 1;
 	else if (type == PIPE)
-		(*last)->prec = 3;
+		(*last)->prec = 2;
 }
 
 void	quote_token(char **input, t_token *head, t_token **last, char quote)
