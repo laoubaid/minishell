@@ -21,6 +21,9 @@
 # include <fcntl.h>
 # include <signal.h>
 
+#include <readline/readline.h>    // readline includes
+#include <readline/history.h>    // readline includes
+
 char	*get_raw_input(void);
 void	shell_signals(void);
 
