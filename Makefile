@@ -5,7 +5,7 @@ COMPILER = cc
 # FLAGS = -Wall -Wextra -Werror
 FLAGS = -g
 
-SRCS = 	src/minishell.c src/parser.c src/input.c src/tokenizer.c src/signals.c \
+SRCS = 	src/minishell.c src/parser.c src/input.c src/tokenizer.c src/expander.c src/signals.c \
 		src/ast.c src/grammar.c \
 		src/deleteme.c #to be deleted
 
@@ -20,7 +20,7 @@ all: $(NAME)
 bonus: all
 
 $(NAME): $(OBJS) $(LIBFT)
-		$(COMPILER) $(FLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+		$(COMPILER) $(FLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline -lhistory
 
 $(LIBFT):
 		$(MAKE) -C libft
