@@ -6,30 +6,57 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 15:31:32 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/05/29 19:02:05 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/06/04 21:50:39 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+int	is_rediration(t_token *token)
+{
+	if (token->type == GREAT || token->type == DGREAT
+		|| token->type == LESS || token->type == DLESS)
+		return (1);
+	return (0);
+}
+
+int	is_words(t_token *token)
+{
+	if (token->type == WORD || token->type == DQUOTE || token->type == SQUOTE)
+		return (1);
+	return (0);
+}
+
+int	is_op(t_token *token)
+{
+	if (token->type == PIPE || token->type == OR || token->type == AND)
+		return (1);
+	return (0);
+}
+
+void	*free_array(char **array)
+{
+	int	index;
+
+	index = 0;
+	if (!array)
+		return (NULL);
+	while (array[index])
+	{
+		free(array[index]);
+		index++;
+	}
+	free(array);
+	return (NULL);
+}
+
 void	*clean_cmd(t_cmd *cmd)
 {
-	t_param	*params;
-	t_param	*tmp_params;
 	t_redir	*redirs;
 	t_redir	*tmp_redirs;
 
-	params = cmd->params;
+	free_array(cmd->simple_cmd);
 	redirs = cmd->redirs;
-	if (cmd->cmd_name)
-		free(cmd->cmd_name);
-	while (params)
-	{
-		tmp_params = params;
-		params = params->next;
-		free(tmp_params->param);
-		free(tmp_params);
-	}
 	while (redirs)
 	{
 		tmp_redirs = redirs;
@@ -61,7 +88,11 @@ t_ast	*new_ast(t_ast *left, t_ast *right, t_cmd *cmd, t_type type)
 
 	ast = (t_ast *)malloc(sizeof(t_ast));
 	if (!ast)
+	{
+		clean_ast(left);
+		clean_ast(right);
 		return (NULL);
+	}
 	ast->type = type;
 	ast->left = left;
 	ast->right = right;
@@ -69,77 +100,54 @@ t_ast	*new_ast(t_ast *left, t_ast *right, t_cmd *cmd, t_type type)
 	return (ast);
 }
 
-int	has_params(t_token *token)
+int	cmd_len(t_token *token)
 {
-	while (token && token->type != PIPE && token->type != AND && token->type != OR && token->type != RPAREN)
+	int	len;
+
+	len = 0;
+	while (token && !is_op(token) && token->type != RPAREN)
 	{
-		if (token->type == WORD)
-			return (1);
-		token = token->next;
+		if (is_words(token))
+			len++;
+		if (is_rediration(token))
+			token = token->next;
 		token = token->next;
 	}
-	return (0);
+	return (len);
 }
 
-t_param	*new_param(t_token *token, t_param *previous)
+char	**get_simple_cmd(t_token *token)
 {
-	t_param	*param;
+	char	**simple_cmd;
+	int		len;
 
-	param = (t_param *)malloc(sizeof(t_param));
-	if (!param)
+	len = cmd_len(token) +1;
+	simple_cmd = (char **)malloc(len * sizeof(char *));
+	if (!simple_cmd)
 		return (NULL);
-	param->previous = previous;
-	param->next = NULL;
-	param->param = ft_strdup(token->content);
-	if (!(param->param))
+	simple_cmd[len -1] = NULL;
+	len = 0;
+	while (token && !is_op(token) && token->type != RPAREN)
 	{
-		free(param);
-		return (NULL);
-	}
-	if (param->param[0] == '-')
-		param->type = OPTION;
-	else
-		param->type = ARG;
-	return (param);
-}
-
-t_param	*get_params(t_token *token)
-{
-	t_param	*params;
-	t_param	*current;
-
-	params = NULL;
-	while (token && token->type != PIPE && token->type != AND && token->type != OR && token->type != RPAREN)
-	{
-		if (token->type == WORD)
+		if (is_words(token))
 		{
-			if (params)
-			{
-				current->next = new_param(token, current);
-				if (!(current->next))
-					return (NULL);
-				current = current->next;
-			}
-			else
-			{
-				params = new_param(token, NULL);
-				if (!params)
-					return (NULL);
-				current = params;
-			}
+			simple_cmd[len] = ft_strdup(token->content);
+			if (!simple_cmd[len])
+				return (free_array(simple_cmd));
+			len++;
 		}
 		else
 			token = token->next;
 		token = token->next;
 	}
-	return (params);
+	return (simple_cmd);
 }
 
 int	has_redirs(t_token *token)
 {
-	while (token && token->type != PIPE && token->type != AND && token->type != OR && token->type != RPAREN)
+	while (token && !is_op(token) && token->type != RPAREN)
 	{
-		if (token->type != WORD)
+		if (!is_words(token))
 			return (1);
 		token = token->next;
 	}
@@ -173,31 +181,31 @@ t_redir	*new_redir(t_token *token, t_redir *previous)
 	return (redir);
 }
 
-t_redir	*get_redirs(t_token **token)
+t_redir	*get_redirs(t_token *token)
 {
 	t_redir	*redirs;
 	t_redir	*current;
 
 	redirs = NULL;
-	while (*token && (*token)->type != PIPE && (*token)->type != AND && (*token)->type != OR && (*token)->type != RPAREN)
+	while (token && !is_op(token) && token->type != RPAREN)
 	{
-		if ((*token)->type != WORD)
+		if (!is_words(token))
 		{
 			if (redirs)
 			{
-				current->next = new_redir(*token, current);
+				current->next = new_redir(token, current);
 				current = current->next;
 			}
 			else
 			{
-				redirs = new_redir(*token, NULL);
+				redirs = new_redir(token, NULL);
 				current = redirs;
 			}
 			if (!current)
 				return (NULL);
-			*token = (*token)->next;
+			token = token->next;
 		}
-		*token = (*token)->next;
+		token = token->next;
 	}
 	return (redirs);
 }
@@ -205,26 +213,21 @@ t_redir	*get_redirs(t_token **token)
 t_cmd	*new_cmd(t_token **token)
 {
 	t_cmd	*cmd;
-	int		params;
 	int		redirs;
 
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
-	cmd->cmd_name = ft_strdup((*token)->content);
-	*token = (*token)->next;
-	params = has_params(*token);
 	redirs = has_redirs(*token);
-	if (params)
-		cmd->params = get_params(*token);
-	else
-		cmd->params = NULL;
+	cmd->simple_cmd = get_simple_cmd(*token);
 	if (redirs)
-		cmd->redirs = get_redirs(token);
+		cmd->redirs = get_redirs(*token);
 	else
 		cmd->redirs = NULL;
-	if (!(cmd->cmd_name) || (params && !(cmd->params)) || (redirs && !(cmd->redirs)))
+	if (!cmd->simple_cmd || (redirs && !(cmd->redirs)))
 		return (clean_cmd(cmd));
+	while (*token && !is_op(*token) && (*token)->type != RPAREN)
+		*token = (*token)->next;
 	return (cmd);
 }
 
@@ -238,24 +241,19 @@ t_ast	*make_command(t_token **token)
 		ast = fill_branches(1, token);
 		*token = (*token)->next;
 	}
-	else if ((*token)->type == WORD)
-	{
-		ast = new_ast(NULL, NULL, NULL, -1);
-		ast->cmd = new_cmd(token);
-		if (!(ast->cmd))
-			return (NULL);
-	}
 	else
 	{
-		ft_putstr_fd("Unexpected error\n", 2);
-		return (NULL);
+		ast = new_ast(NULL, NULL, NULL, -1);
+		if (!ast)
+			return (NULL);
+		ast->cmd = new_cmd(token);
+		if (!(ast->cmd))
+			return (clean_ast(ast));
 	}
-	if (!ast)
-		return (NULL);
 	return (ast);
 }
 
-t_ast	*fill_branches(int	min_prec, t_token **token)
+t_ast	*fill_branches(int min_prec, t_token **token)
 {
 	t_ast	*left;
 	t_ast	*right;
@@ -267,14 +265,14 @@ t_ast	*fill_branches(int	min_prec, t_token **token)
 		return (NULL);
 	while (1)
 	{
-		if (!*token || ((*token)->type != PIPE && (*token)->type != AND && (*token)->type != OR) || (*token)->prec < min_prec)
+		if (!*token || !is_op(*token) || (*token)->prec < min_prec)
 			break ;
 		next_min_prec = (*token)->prec +1;
 		type = (*token)->type;
 		*token = (*token)->next;
 		right = fill_branches(next_min_prec, token);
 		if (!right)
-			return (NULL);
+			return (clean_ast(left));
 		left = new_ast(left, right, NULL, type);
 		if (!left)
 			return (NULL);
@@ -284,15 +282,16 @@ t_ast	*fill_branches(int	min_prec, t_token **token)
 
 t_ast	*build_ast(t_token *token)
 {
-	t_token	*grammar;
+	// t_token	*grammar;
 
-	grammar = token;
-	if (verify_grammar(&grammar) || grammar)
-	{
-		ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
-		return (NULL);
-	}
-	else
-		printf("\e[32mgrammar is all good\e[0m\n\n");
+	// grammar = token;
+	// if (verify_grammar(&grammar) || grammar)
+	// {
+	// 	ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
+	// 	return (NULL);
+	// }
+	// else
+	// 	printf("\e[32mgrammar is all good\e[0m\n\n");
 	return (fill_branches(1, &token));
+	// return (NULL);
 }

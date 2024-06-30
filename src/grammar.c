@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/05/29 18:46:03 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/06/07 01:59:09 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 int	simple_cmd(t_token **token)
 {
-	if (!*token || (*token)->type != WORD)
+	if (!*token || (!is_words(*token) && !is_rediration(*token)))
 		return (1);
-	while (*token && ((*token)->type == WORD || (*token)->type == GREAT || (*token)->type == DGREAT || (*token)->type == LESS || (*token)->type == DLESS))
+	while (*token && (is_words(*token) || is_rediration(*token)))
 	{
-		if ((*token)->type == WORD)
+		if (is_rediration(*token))
 		{
 			*token = (*token)->next;
-			continue ;
+			if (!*token || !is_words(*token))
+				return (1);
 		}
-		*token = (*token)->next;
-		if (!*token || (*token)->type != WORD)
+		if (!(*token)->content)
 			return (1);
 		*token = (*token)->next;
 	}
@@ -42,9 +42,7 @@ int	full_cmd(t_token **token)
 		return (0);
 	}
 	else
-	{
 		return (simple_cmd(token));
-	}
 }
 
 int	verify_grammar(t_token **token)
@@ -53,61 +51,21 @@ int	verify_grammar(t_token **token)
 		return (1);
 	if (!*token || (*token)->type == RPAREN)
 		return (0);
-	if ((*token)->type == PIPE || (*token)->type == AND || (*token)->type == OR)
+	if (is_op(*token))
 	{
 		*token = (*token)->next;
 		return (verify_grammar(token));
 	}
+	return (1);
 }
 
-// int	full_cmd(t_token **token, int paren)
-// {
-// 	if (simple_cmd(token))
-// 		return (1);
-// 	while (*token && ((*token)->type == PIPE || (*token)->type == AND || (*token)->type == OR))
-// 	{
-// 		*token = (*token)->next;
-// 		if (simple_cmd(token))
-// 			return (1);
-// 	}
-// 	if (!*token || (paren && (*token)->type == RPAREN))
-// 		return (0);
-// 	return (1);
-// }
-
-// int	verify_grammar(t_token **token, int paren)
-// {
-// 	if (*token && (*token)->type == LPAREN)
-// 	{
-// 		*token = (*token)->next;
-// 		if (verify_grammar(token, 1))
-// 			return (1);
-// 		if (*token && (*token)->type == RPAREN)
-// 			*token = (*token)->next;
-// 		else
-// 			return (1);
-// 		if (!paren && !*token)
-// 			return (0);
-// 		if (paren && *token && (*token)->type == RPAREN)
-// 			return (0);
-// 		if (*token && ((*token)->type == PIPE || (*token)->type == AND || (*token)->type == OR))
-// 		{
-// 			*token = (*token)->next;
-// 			return (verify_grammar(token, paren));
-// 		}
-// 		return (1);
-
-// 		// if (paren && *token && (*token)->type == RPAREN)
-// 		// 	return (0);
-// 		// if (*token && ((*token)->type == PIPE || (*token)->type == AND || (*token)->type == OR))
-// 		// {
-// 		// 	*token = (*token)->next;
-// 		// 	return (verify_grammar(token, paren));
-// 		// }
-// 		// if (!*token)
-// 		// 	return (0);
-// 		// return (1);
-// 	}
-// 	else
-// 		return (full_cmd(token, paren));
-// }
+int	grammar(t_token *token)
+{
+	if (verify_grammar(&token) || token)
+	{
+		ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
+		return (1);
+	}
+	printf("\e[32mgrammar is all good\e[0m\n\n");
+	return (0);
+}

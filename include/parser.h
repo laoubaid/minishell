@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 20:09:43 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/05/29 18:43:25 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/06/07 00:07:31 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,6 @@ typedef enum e_type
 	LPAREN
 }	t_type;
 
-typedef enum e_param_type
-{
-	ARG,
-	OPTION
-}	t_param_type;
-
 typedef	enum e_redir_type
 {
 	R_STD_OUT,
@@ -52,15 +46,6 @@ typedef struct s_token
 	struct s_token	*previous;
 }	t_token;
 
-typedef	struct s_param
-{
-	t_param_type	type;
-	char			*param;
-	struct s_param	*previous;
-	struct s_param	*next;
-}	t_param;
-
-
 typedef struct s_redir
 {
 	t_redir_type	redir_type;
@@ -71,8 +56,7 @@ typedef struct s_redir
 
 typedef struct s_cmd
 {
-	char	*cmd_name;
-	t_param	*params;
+	char	**simple_cmd;
 	t_redir	*redirs;
 }	t_cmd;
 
@@ -86,10 +70,15 @@ typedef	struct s_ast
 
 
 int		parser(char *input);
-void	clean_tokens(t_token *token, int exit_process);
+void	*clean_tokens(t_token *token);
 t_token	*tokenizer(char *input);
+t_token	*expand_tokens(t_token *tokens);
+int		is_words(t_token *token);
+int		is_rediration(t_token *token);
+int		is_op(t_token *token);
 t_ast	*build_ast(t_token *token);
 int		verify_grammar(t_token **token);
+int		grammar(t_token *token);
 void	*clean_ast(t_ast *ast);
 t_ast	*fill_branches(int	min_prec, t_token **token);
 

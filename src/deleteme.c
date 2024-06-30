@@ -3,6 +3,8 @@
 void	print_tokens(t_token *tokens)
 {
 	int	id = 1;
+	if (!tokens)
+		printf("tokens: NULL\n");
 	while (tokens)
 	{
 		printf("token: %d | type: ", id);
@@ -42,26 +44,27 @@ void	print_tokens(t_token *tokens)
 
 void	print_cmd(t_cmd *cmd)
 {
-	t_param	*crnt_param;
 	t_redir	*crnt_redir;
 
 	if (!cmd)
 		return ;
-	crnt_param = cmd->params;
 	crnt_redir = cmd->redirs;
 	printf("--------------------------------- cmd ---------------------------------\n");
-	printf("cmd name: %s\n", cmd->cmd_name);
+	if ((cmd->simple_cmd)[0])
+		printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
+	else
+		printf("cmd name: NULL\n");
 	printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
-	while(crnt_param)
+	if ((cmd->simple_cmd)[0])
 	{
-		printf("param type: ");
-		if (crnt_param->type == ARG)
-			printf(" ARG  ");
-		else if (crnt_param->type == OPTION)
-			printf("OPTION");
-		printf(" | param content: %s\n", crnt_param->param);
-		crnt_param = crnt_param->next;
+		int i = 1;
+		while ((cmd->simple_cmd)[i])
+		{
+			printf("%s -> ", (cmd->simple_cmd)[i]);
+			i++;
+		}
 	}
+	printf("NULL\n");
 	printf("- - - - - - - - - - - - - - - - -redirs- - - - - - - - - - - - - - - - \n");
 	while (crnt_redir)
 	{
