@@ -53,7 +53,7 @@ int	parser(char *input, t_ast *ast)
 	// exit if build_ast fails
 	ast = build_ast(tokens);
 	print_ast(ast);
-	clean_ast(ast);
+	// clean_ast(ast);
 	clean_tokens(tokens);
 	return (0);
 }
