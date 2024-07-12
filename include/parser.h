@@ -69,7 +69,7 @@ typedef	struct s_ast
 }	t_ast;
 
 
-int		parser(char *input);
+int		parser(char *input, t_ast *ast);
 void	*clean_tokens(t_token *token);
 t_token	*tokenizer(char *input);
 t_token	*expand_tokens(t_token *tokens);
