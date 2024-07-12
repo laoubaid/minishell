@@ -23,10 +23,10 @@ char	all_whitespace(char *str)
 	return (1);
 }
 
-int	parser(char *input)
+int	parser(char *input, t_ast *ast)
 {
 	t_token	*tokens;
-	t_ast	*ast;
+	// t_ast	*ast;
 
 	if (!input)
 	{
@@ -53,7 +53,7 @@ int	parser(char *input)
 	// exit if build_ast fails
 	ast = build_ast(tokens);
 	print_ast(ast);
-	clean_ast(ast);
+	// clean_ast(ast);
 	clean_tokens(tokens);
 	return (0);
 }
