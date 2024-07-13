@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:09:31 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/07 00:07:21 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 18:02:43 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,14 @@ char	all_whitespace(char *str)
 	return (1);
 }
 
-int	parser(char *input, t_ast *ast)
+int	parser(char *input, t_ast **ast)
 {
 	t_token	*tokens;
-	// t_ast	*ast;
 
 	if (!input)
 	{
 		rl_clear_history();
-		exit(0); 
+		exit(EXIT_SUCCESS); 
 	}
 	if (!*input || all_whitespace(input))
 	{
@@ -48,12 +47,8 @@ int	parser(char *input, t_ast *ast)
 		clean_tokens(tokens);
 		return (1);
 	}
-	// printf("%s\n" ,getenv("SHELL"));
 	tokens = expand_tokens(tokens);
-	// exit if build_ast fails
-	ast = build_ast(tokens);
-	print_ast(ast);
-	// clean_ast(ast);
+	*ast = build_ast(tokens);
 	clean_tokens(tokens);
 	return (0);
 }

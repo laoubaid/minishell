@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/07 00:06:49 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 16:57:18 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,20 @@ char	*expand_word(char *key)
 {
 	int		i;
 	char	*env;
+	char	*word;
 
 	key++;
 	if (!ft_strncmp(key, "?", 2) || !ft_strncmp(key, "? ", 2)
 		|| !ft_strncmp(key, "?\t", 2))
 		return (ft_strdup("69"));
-	env = getenv(key);
+	i = 0;
+	while (key[i] && key[i] != ' ' && key[i] != '\t' && key[i] != '\n')
+		i++;
+	word = ft_substr(key, 0, i);
+	if (!word)
+		return (NULL);
+	env = getenv(word);
+	free(word);
 	if (env)
 		return (ft_strdup(env));
 	else
@@ -126,7 +134,7 @@ t_token	*expand_tokens(t_token *token)
 	if (t)
 	{
 		clean_tokens(token);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return (token);
 }

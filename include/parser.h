@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 20:09:43 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/07 00:07:31 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 16:39:17 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef	struct s_ast
 }	t_ast;
 
 
-int		parser(char *input, t_ast *ast);
+int		parser(char *input, t_ast **ast);
 void	*clean_tokens(t_token *token);
 t_token	*tokenizer(char *input);
 t_token	*expand_tokens(t_token *tokens);
