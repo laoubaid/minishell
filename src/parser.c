@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:09:31 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/13 18:02:43 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 19:33:16 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	parser(char *input, t_ast **ast)
 	if (grammar(tokens))
 	{
 		clean_tokens(tokens);
+		*ast = NULL;
 		return (1);
 	}
 	tokens = expand_tokens(tokens);

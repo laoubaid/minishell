@@ -87,7 +87,7 @@ void	print_ast(t_ast *ast)
 {
 	if (!ast)
 		return;
-	if (ast->cmd && ast->type == -1)
+	if (ast->cmd && ast->type == WORD)
 		printf("\e[32m");
 	else
 		printf("\e[31m");
@@ -105,6 +105,10 @@ void	print_ast(t_ast *ast)
 		printf("AND\n");
 	else if (ast->type == OR)
 		printf("OR\n");
+	else if (ast->type == LPAREN)
+		printf("LPAREN\n");
+	else if (ast->type == WORD)
+		printf("WORD\n");
 	else if (ast->type == -1)
 		printf("NULL(-1)\n");
 	if (ast->cmd)
@@ -119,7 +123,7 @@ void	print_ast(t_ast *ast)
 	{
 		printf("Left AST NODE:\n");
 		print_ast(ast->left);
-		if (ast->cmd && ast->type == -1)
+		if (ast->cmd && ast->type == WORD)
 			printf("\e[32m");
 		else
 			printf("\e[31m");
@@ -131,7 +135,7 @@ void	print_ast(t_ast *ast)
 	{
 		printf("Right AST NODE:\n");
 		print_ast(ast->right);
-		if (ast->cmd && ast->type == -1)
+		if (ast->cmd && ast->type == WORD)
 			printf("\e[32m");
 		else
 			printf("\e[31m");
