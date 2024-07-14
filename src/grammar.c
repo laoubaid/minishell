@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/07 01:59:09 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 20:13:14 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,13 @@ int	full_cmd(t_token **token)
 		if (verify_grammar(token) || !*token || (*token)->type != RPAREN)
 			return (1);
 		*token = (*token)->next;
+		while (*token && is_rediration(*token))
+		{
+			*token = (*token)->next;
+			if (!*token || !is_words(*token))
+				return (1);
+			*token = (*token)->next;
+		}
 		return (0);
 	}
 	else

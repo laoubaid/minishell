@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 15:31:32 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/13 16:57:04 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 21:06:50 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,19 +231,43 @@ t_cmd	*new_cmd(t_token **token)
 	return (cmd);
 }
 
+t_ast	*paren_ast(t_token **token)
+{
+	t_ast	*ast;
+	t_ast	*l_ast;
+
+	ast = new_ast(NULL, NULL, NULL, (*token)->type);
+	if (!ast)
+		return (NULL);
+	*token = (*token)->next;
+	l_ast = fill_branches(1, token);
+	if (!l_ast)
+		return (clean_ast(ast));
+	*token = (*token)->next;
+	ast->left = l_ast;
+	if (has_redirs(*token))
+	{
+		ast->cmd = new_cmd(token);
+		if (!ast->cmd)
+			return (clean_ast(ast));
+	}
+	return (ast);
+}
+
 t_ast	*make_command(t_token **token)
 {
 	t_ast	*ast;
 
 	if ((*token)->type == LPAREN)
-	{
-		*token = (*token)->next;
-		ast = fill_branches(1, token);
-		*token = (*token)->next;
-	}
+		ast = paren_ast(token);
+	// {
+	// 	*token = (*token)->next;
+	// 	ast = fill_branches(1, token);
+	// 	*token = (*token)->next;
+	// }
 	else
 	{
-		ast = new_ast(NULL, NULL, NULL, -1);
+		ast = new_ast(NULL, NULL, NULL, WORD);
 		if (!ast)
 			return (NULL);
 		ast->cmd = new_cmd(token);
