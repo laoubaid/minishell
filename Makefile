@@ -5,9 +5,9 @@ COMPILER = cc
 # FLAGS = -Wall -Wextra -Werror
 FLAGS = -g
 
-SRCS = 	src/minishell.c src/parser.c src/input.c src/tokenizer.c src/expander.c src/signals.c \
-		src/ast.c src/grammar.c \
-		src/deleteme.c #to be deleted
+SRCS = 	src/parsing/minishell.c src/parsing/parser.c src/parsing/input.c src/parsing/tokenizer.c src/parsing/expander.c src/parsing/signals.c \
+		src/parsing/ast.c src/parsing/grammar.c \
+		src/parsing/deleteme.c #to be deleted
 
 LIBFT = libft/libft.a
 

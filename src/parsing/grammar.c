@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   grammar.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/13 20:13:14 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	simple_cmd(t_token **token)
 {
