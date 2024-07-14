@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:11:59 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/13 16:57:58 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 char	*add_char_to_str(char *str, char c)
 {
