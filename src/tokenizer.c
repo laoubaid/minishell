@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 23:51:55 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/06 22:08:22 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 17:59:52 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ t_token	*tokenizer(char *input)
 		{
 			free(input);
 			clean_tokens(tokens);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		if (!tokens)
 			tokens = last;

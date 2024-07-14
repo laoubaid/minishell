@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 15:31:32 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/06/04 21:50:39 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 16:57:04 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,16 +282,13 @@ t_ast	*fill_branches(int min_prec, t_token **token)
 
 t_ast	*build_ast(t_token *token)
 {
-	// t_token	*grammar;
+	t_ast	*ast;
 
-	// grammar = token;
-	// if (verify_grammar(&grammar) || grammar)
-	// {
-	// 	ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
-	// 	return (NULL);
-	// }
-	// else
-	// 	printf("\e[32mgrammar is all good\e[0m\n\n");
-	return (fill_branches(1, &token));
-	// return (NULL);
+	ast = fill_branches(1, &token);
+	if (!ast)
+	{
+		clean_tokens(token);
+		exit(EXIT_FAILURE);
+	}
+	return (ast);
 }

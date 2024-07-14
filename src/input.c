@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:11:59 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/04/28 18:47:14 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/07/13 16:57:58 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*add_char_to_str(char *str, char c)
 	{
 		str = ft_strdup("");
 		if (!str)
-			exit(1);
+			exit(EXIT_FAILURE);
 	}
 	str_len = ft_strlen(str);
 	new_str = (char *)malloc(str_len +2);
@@ -53,11 +53,11 @@ char	*get_raw_input(void)
 		if (char_read < 0)
 		{
 			free(str);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		str = add_char_to_str(str, buffer);
 		if (!str)
-			exit(1);
+			exit(EXIT_FAILURE);
 		if (buffer == '\n')
 			break ;
 	}
