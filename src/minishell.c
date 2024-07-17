@@ -6,13 +6,14 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/07/17 00:29:59 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/minishell.h"
+#include "../include/execution.h"
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **env)
 {
 	char	*buffer;
 	t_ast	*ast;
@@ -28,6 +29,7 @@ int	main(int argc, char **argv)
 			buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		syntax_error = parser(buffer, &ast);
 		print_ast(ast);
+		execute(ast, env);
 		clean_ast(ast);
 	}
 	return (0);
