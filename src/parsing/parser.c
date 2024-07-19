@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:09:31 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/07/19 02:54:11 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int	parser(char *input, t_ast **ast)
 	}
 	add_history(input);
 	tokens = tokenizer(input);
-	printf("------------------------these are intial tokens------------------------\n");
-	print_tokens(tokens);
-	printf("-----------------------------------------------------------------------\n\n");
+	// printf("------------------------these are intial tokens------------------------\n");
+	// print_tokens(tokens);
+	// printf("-----------------------------------------------------------------------\n\n");
 	if (grammar(tokens))
 	{
 		clean_tokens(tokens);

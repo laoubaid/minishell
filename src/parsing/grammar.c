@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/07/19 02:54:29 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,6 @@ int	grammar(t_token *token)
 		ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
 		return (1);
 	}
-	printf("\e[32mgrammar is all good\e[0m\n\n");
+	// printf("\e[32mgrammar is all good\e[0m\n\n");
 	return (0);
 }
