@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/07/26 18:58:04 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/07/30 08:52:55 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	**ft_free(char **ptr);
 int		path(char ***p, char *ev);
 int		getpath(char **ev);
 
-void	redirecte(t_cmd *cmd);
+void	redirecte(t_cmd *cmd, int in, int out, int apd);
 
 int    execute(t_param *param);
 
@@ -55,5 +55,7 @@ int     execution_errors(char *cmd);
 
 int     handle_pipe(t_pipe *pip, char **env);
 t_pipe  *pipeline(t_ast *ast);
+
+t_param *param_init(char **env);
 
 #endif

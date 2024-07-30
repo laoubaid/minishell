@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/07/26 19:09:14 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/07/30 09:26:52 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ int	command_execution(t_cmd *cmdr, char **env)
     int exit_status;
 
 	cmd = cmdr->simple_cmd;
-    if (!check_if_path(cmd[0]))
+    
+    if (!check_if_path(cmd[0]) && getpath(env) != -1)
         path(&cmd, env[getpath(env)]);
 	if (!fork())
 	{
-		redirecte(cmdr);
+		redirecte(cmdr, 0, 0, 0);
         exit_status = execution_errors(cmd[0]);
         if (exit_status)
             exit(exit_status);
@@ -78,7 +79,7 @@ int subshell(t_param *param)
     if (!pid)
     {
         if (param->ast->cmd != NULL)
-            redirecte(param->ast->cmd);
+            redirecte(param->ast->cmd, 0, 0, 0);
         param->ast = param->ast->left;
         exit(execute(param));
     }
