@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/28 20:22:25 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/01 00:52:58 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char **argv, char **env)
 		syntax_error = parser(buffer, &(param->ast));
 		// print_ast(param->ast);
 		exit_status = execute(param);
-		printf("exit code: %d\n", exit_status);
+		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
 		clean_ast(param->ast);
 	}
 	return (0);
