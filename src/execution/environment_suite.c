@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 12:03:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/01 01:11:39 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:25:51 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,27 @@ char	**recreate_env(t_env *env_list, char **env)
 	return (env[i] = NULL, env);
 }
 
+int	env_edit(t_param *param, char *find, char *value)
+{
+	t_env	*tmp;
+
+	tmp = param->env;
+	while (tmp)
+	{
+		if (!ft_strncmp(find, tmp->name, ft_strlen(find)))
+		{
+			free(tmp->name);
+			tmp->name = strjoin_optclean(find, "=", 0);
+			tmp->name = strjoin_optclean(tmp->name, value, 3);
+			tmp->value = env_fetch(tmp->name, tmp);
+			param->env_arr = recreate_env(param->env, NULL);
+			return (0);
+		}
+		tmp = tmp->next;
+	}
+	return (1);
+}
+
 void	print_variables(t_param *param)
 {
 	t_env	*tmp;
@@ -71,6 +92,8 @@ int checkifvalid(char *str, int *idx)
 	tmp = str;
 		
 	if (!str)
+		return ((*idx)++, 0);
+	if (!*str || *str == '=')
 	{
 		write(2, tmp, ft_strlen(tmp));
 		write(2, ": not a valid identifier\n", 25);
