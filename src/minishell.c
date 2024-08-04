@@ -44,7 +44,10 @@ int	main(int argc, char **argv, char **env)
 		// exit_status = execute(param);
 		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
 		param->ast = clean_ast(param->ast);
-		
+		// print_ast(param->ast);
+		exit_status = execute(param);
+		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		// clean_ast(param->ast);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/01 01:17:41 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 08:47:36 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ int	command_execution(t_param *param)
 	char	**cmd;
 	int		exit_status;
 
-	exit_status = builtins(param);
+	cmd = param->ast->cmd->simple_cmd;
+	exit_status = builtins(param, cmd);
 	if (exit_status != -1)
 		return (exit_status);
-	cmd = param->ast->cmd->simple_cmd;
 	if (!check_if_path(cmd[0]) && getpath(param->env_arr, "PATH=") != -1)
 		path(&cmd, (param->env_arr)[getpath(param->env_arr, "PATH=")]);
 	if (!fork())
