@@ -1,4 +1,4 @@
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
 void	print_tokens(t_token *tokens)
 {
@@ -77,7 +77,11 @@ void	print_cmd(t_cmd *cmd)
 			printf("R_APPEND ");
 		else if (crnt_redir->redir_type == R_HEREDOC)
 			printf("R_HEREDOC");
-		printf(" | filename: %s\n", crnt_redir->filename);
+		if (crnt_redir->filename)
+			printf(" | filename: %s\n", crnt_redir->filename);
+		else
+			printf(" | filename: NULL\n");
+
 		crnt_redir = crnt_redir->next;
 	}
 	printf("-----------------------------------------------------------------------\n");

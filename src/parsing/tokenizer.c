@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 23:51:55 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/04 18:00:06 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
+
+int	is_whitespace(char c)
+{
+	if (c == ' ' || c == '\t' || c == '\n')
+		return (1);
+	return (0);
+}
+
+// int		op_char(char c)
+// {
+// 	if (c == '|' || c == '||' || c == '&&')
+// 		return (1);
+// 	return (0);
+// }
 
 void	*clean_tokens(t_token *token)
 {
@@ -43,9 +57,9 @@ int	key_word(char *input)
 		|| *input == '>'
 		|| *input == '<'
 		|| *input == '('
-		|| *input == ')'
-		|| *input == '"'
-		|| *input == '\'')
+		|| *input == ')')
+		// || *input == '"'
+		// || *input == '\'')
 		return (1);
 	else
 		return (0);
@@ -131,21 +145,49 @@ void	*quote_token(char **input, t_token *last, char quote)
 	return (last);
 }
 
+int	word_len(char *input)
+{
+	int		len;
+	char	quote;
+
+	len = 0;
+	while (input[len] && !is_whitespace(input[len]) && !key_word(&input[len]))
+	{
+		if (input[len] == '\'' || input[len] == '"')
+		{
+			quote = input[len];
+			len++;
+			while (input[len] && input[len] != quote)
+				len++;
+			if (input[len] != quote)
+				return (-1);
+			len++;
+		}
+		else
+			len++;
+	}
+	return (len);
+}
+
 void	*word_token(char **input, t_token *last)
 {
 	int		len;
 	char	*content;
 
-	len = 0;
-	while ((*input)[len] && (*input)[len] != ' ' && (*input)[len] != '\n'
-		&& (*input)[len] != '\t' && !key_word(*input + len))
-		len++;
-	// if (!len)
-	// 	return (last);
-	content = ft_substr(*input, 0, len);
-	if (!content)
-		return (NULL);
-	(*input) += len;
+	len = word_len(*input);
+	if (len == -1)
+		content = NULL;
+	else
+	{
+		content = ft_substr(*input, 0, len);
+		if (!content)
+			return (NULL);
+	}
+	if (len >= 0)
+		(*input) += len;
+	else
+		while (**input)
+			(*input)++;
 	last = append_token(last, WORD, content);
 	if (!last)
 		free(content);
@@ -172,10 +214,6 @@ void	*get_token(char **input, t_token *last)
 		return (special_token(input, last, LPAREN));
 	else if (**input == ')')
 		return (special_token(input, last, RPAREN));
-	else if (**input == '"')
-		return (quote_token(input, last, '"'));
-	else if (**input == '\'')
-		return (quote_token(input, last, '\''));
 	else
 		return (word_token(input, last));
 }
@@ -191,7 +229,7 @@ t_token	*tokenizer(char *input)
 	current = input;
 	while (*current)
 	{
-		while (*current == ' ' || *current == '\t' || *current == '\n')
+		while (is_whitespace(*current))
 			current++;
 		if (!*current)
 			break ;

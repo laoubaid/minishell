@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/01 16:31:30 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/04 19:16:35 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/parser.h"
 #include "../include/execution.h"
-
 
 int	main(int argc, char **argv, char **env)
 {
@@ -23,6 +22,8 @@ int	main(int argc, char **argv, char **env)
 
 	syntax_error = 0;
 	param = param_init(env);
+	// if param is null (protect!!!)
+	param->ast = NULL;// fixed jumb condition (var not initialized error)
 	shell_signals();
 	while (1)
 	{
@@ -31,6 +32,18 @@ int	main(int argc, char **argv, char **env)
 		else
 			buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		syntax_error = parser(buffer, &(param->ast));
+		if (syntax_error)
+			continue;
+		if (param->ast)
+		{
+			print_ast(param->ast);
+			printf("after expansion: \n");
+			expand_cmd(param);
+			print_ast(param->ast);
+		}
+		// exit_status = execute(param);
+		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		param->ast = clean_ast(param->ast);
 		// print_ast(param->ast);
 		exit_status = execute(param);
 		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);

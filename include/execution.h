@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/02 11:26:11 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:05:15 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,6 @@
 
 # include <sys/wait.h>
 # include <sys/stat.h>
-
-typedef struct s_env
-{
-	char			*name;
-	char			*value;
-	int				print_flag;
-	struct s_env	*next;
-}	t_env;
-
-typedef struct s_param
-{
-	t_env	*env;
-	char	**env_arr;
-	t_ast	*ast;
-}   t_param;
-
-typedef struct s_pipe  
-{
-	t_cmd			*cmd;
-	struct s_pipe	*next;
-}	t_pipe;
-
-
 
 int		command_execution(t_param *param);
 
