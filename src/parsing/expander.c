@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/04 18:03:01 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/04 23:51:36 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,20 +107,20 @@ char	*get_env_ret(char *key, char *value)
 	return (ft_strdup(value));
 }
 
-char	*get_env(char **str, t_env *env)
+char	*get_env(char **str, t_env *env, int in)
 {
 	char	*key;
 	int		len;
 
 	len = 0;
-	while ((*str)[len] && !is_whitespace((*str)[len])
+	while ((*str)[len] && !is_whitespace((*str)[len]) && (*str)[len] != '$'
 		&& (*str)[len] != '"' && (*str)[len] != '\'')
 		len++;
 	key = ft_substr(*str, 0, len);
 	if (!key)
 		return (NULL);
 	*str += len;
-	if (!*key)
+	if ((!*key && in) || (!*key && !in && **str != '"' && **str != '\''))
 		return (get_env_ret(key, "$"));
 	while (env && *key)
 	{
@@ -160,7 +160,7 @@ char	*expand_dquote(char **str, t_env *env, char *current, char **expdd_arr)
 			if (!current)
 				return (free_array(expdd_arr));
 			*str += len +1;
-			current = join_str(current, get_env(str, env));
+			current = join_str(current, get_env(str, env, 1));
 			if (!current)
 				return (free_array(expdd_arr));
 			len = 0;
@@ -172,6 +172,30 @@ char	*expand_dquote(char **str, t_env *env, char *current, char **expdd_arr)
 	if (!current)
 		return (free_array(expdd_arr));
 	*str += len +1;
+	return (current);
+}
+
+char	*nq_ws_found(char ***expdd_arr, char *current, char *ws, int len)
+{
+	while (*ws)
+	{
+		*expdd_arr = array_append(*expdd_arr, current);
+		current = NULL;
+		if (!(*expdd_arr))
+			return (NULL);
+		while (is_whitespace(*ws))
+			ws++;
+		while (ws[len] && !is_whitespace(ws[len]))
+			len++;
+		if (len)
+		{
+			current = ft_substr(ws, 0, len);
+			if (!current)
+				return (free_array(*expdd_arr));
+			ws += len;
+			len = 0;
+		}
+	}
 	return (current);
 }
 
@@ -191,26 +215,33 @@ char	*noquote_split(char ***expdd_arr, char *current, char *whitespaced)
 		len = 0;
 	}
 	// case whitespace found
-	while (*whitespaced)
-	{
-		*expdd_arr = array_append(*expdd_arr, current);
-		current = NULL;
-		if (!(*expdd_arr))
-			return (NULL);
-		while (is_whitespace(*whitespaced))
-			whitespaced++;
-		while (whitespaced[len] && !is_whitespace(whitespaced[len]))
-			len++;
-		if (len)
-		{
-			current = ft_substr(whitespaced, 0, len);
-			if (!current)
-				return (free_array(*expdd_arr));
-			whitespaced += len;
-			len = 0;
-		}
-	}
+	current = nq_ws_found(expdd_arr, current, whitespaced, len);
 	return (current);
+}
+
+char	*get_nq_str(char **str, t_env *env, char *current, int *len)
+{
+	char	*noquote_str;
+
+	noquote_str = NULL;
+	while ((*str)[*len] && (*str)[*len] != '"' && (*str)[*len] != '\'')
+	{
+		if ((*str)[*len] == '$')
+		{
+			noquote_str = join_str(noquote_str, ft_substr(*str, 0, *len));
+			if (!noquote_str)
+				return (NULL);
+			*str += *len +1;
+			noquote_str = join_str(noquote_str, get_env(str, env, 0));
+			if (!noquote_str)
+				return (NULL);
+			*len = 0;
+		}
+		else
+			(*len)++;
+	}
+	noquote_str = join_str(noquote_str, ft_substr(*str, 0, *len));
+	return (noquote_str);
 }
 
 char	*expand_nquote(char **str, t_env *env, char *current, char ***expdd_arr)
@@ -219,27 +250,12 @@ char	*expand_nquote(char **str, t_env *env, char *current, char ***expdd_arr)
 	int		len;
 
 	len = 0;
-	noquote_str = NULL;
-	// make a string that contains everything expanded including whitespaces (that will have to saparate the the words in this case)
-	while ((*str)[len] && (*str)[len] != '"' && (*str)[len] != '\'')
+	noquote_str = get_nq_str(str, env, current, &len);
+	if (!noquote_str)
 	{
-		if ((*str)[len] == '$')
-		{
-			// expand the var
-
-			noquote_str = join_str(noquote_str, ft_substr(*str, 0, len));
-			// if (!noquote_str)
-				// return (free_array(expdd_arr));// also free current str
-			*str += len +1;
-			noquote_str = join_str(noquote_str, get_env(str, env));
-			// if (!noquote_str)
-				// return (free_array(expdd_arr));// also free current str
-			len = 0;
-		}
-		else
-			len++;
+		free(current);
+		return (free_array(*expdd_arr));
 	}
-	noquote_str = join_str(noquote_str, ft_substr(*str, 0, len));
 	current = noquote_split(expdd_arr, current, noquote_str);
 	*str += len;
 	free(noquote_str);
@@ -297,11 +313,26 @@ int	expand_args(char ***cmd_arr, t_env *env)
 int	expand_redir(t_redir **redirs, t_env *env)
 {
 	t_redir	*current;
+	char	**expndd_arr;
 
 	current = *redirs;
 	while (current)
 	{
-
+		expndd_arr = expand_str(current->filename, env);
+		if (!expndd_arr)
+			return (1);
+		if (expndd_arr[1])
+		{
+			free(current->filename);
+			free_array(expndd_arr);
+			current->filename = NULL;
+		}
+		else
+		{
+			free(current->filename);
+			current->filename = expndd_arr[0];
+			free(expndd_arr);
+		}
 		current = current->next;
 	}
 	return (0);
@@ -309,7 +340,7 @@ int	expand_redir(t_redir **redirs, t_env *env)
 
 void	expand_cmd(t_param	*param)
 {
-	if (!param->ast->cmd)
+	if (!param || !param->ast || !param->ast->cmd)
 		return ;
 	if (expand_args(&param->ast->cmd->simple_cmd, param->env))
 	{
