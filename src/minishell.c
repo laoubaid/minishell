@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/04 19:16:35 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/04 23:24:47 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int	main(int argc, char **argv, char **env)
 		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
 		param->ast = clean_ast(param->ast);
 		// print_ast(param->ast);
-		exit_status = execute(param);
-		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		// exit_status = execute(param);
+		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
 		// clean_ast(param->ast);
 	}
 	return (0);

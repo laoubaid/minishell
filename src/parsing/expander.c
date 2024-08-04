@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/04 23:51:36 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/04 23:23:23 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ char	*get_env_ret(char *key, char *value)
 	return (ft_strdup(value));
 }
 
-char	*get_env(char **str, t_env *env, int in)
+char	*get_env_to_expande(char **str, t_env *env, int in)
 {
 	char	*key;
 	int		len;
@@ -160,7 +160,7 @@ char	*expand_dquote(char **str, t_env *env, char *current, char **expdd_arr)
 			if (!current)
 				return (free_array(expdd_arr));
 			*str += len +1;
-			current = join_str(current, get_env(str, env, 1));
+			current = join_str(current, get_env_to_expande(str, env, 1));
 			if (!current)
 				return (free_array(expdd_arr));
 			len = 0;
@@ -232,7 +232,7 @@ char	*get_nq_str(char **str, t_env *env, char *current, int *len)
 			if (!noquote_str)
 				return (NULL);
 			*str += *len +1;
-			noquote_str = join_str(noquote_str, get_env(str, env, 0));
+			noquote_str = join_str(noquote_str, get_env_to_expande(str, env, 0));
 			if (!noquote_str)
 				return (NULL);
 			*len = 0;
