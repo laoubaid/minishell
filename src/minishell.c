@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/01 00:52:58 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 18:39:08 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/parser.h"
 #include "../include/execution.h"
-
 
 int	main(int argc, char **argv, char **env)
 {
@@ -31,10 +30,19 @@ int	main(int argc, char **argv, char **env)
 		else
 			buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		syntax_error = parser(buffer, &(param->ast));
-		// print_ast(param->ast);
-		exit_status = execute(param);
-		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		if (syntax_error)
+		{
+			// printf("");
+			continue;
+		}
+		print_ast(param->ast);
+		printf("after expansion: \n");
+		expand_cmd(param);
+		print_ast(param->ast);
+		// exit_status = execute(param);
+		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
 		clean_ast(param->ast);
+		
 	}
 	return (0);
 }

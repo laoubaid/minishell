@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/26 01:22:06 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:04:50 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,90 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "parser.h"
+// # include "parser.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
+
+// parsing enums
+typedef enum e_type
+{
+	WORD,
+	PIPE,
+	AND,
+	OR,
+	GREAT,
+	DGREAT,
+	LESS,
+	DLESS,
+	DQUOTE,
+	SQUOTE,
+	RPAREN,
+	LPAREN
+}	t_type;
+
+typedef	enum e_redir_type
+{
+	R_STD_OUT,
+	R_APPEND,
+	R_STD_IN,
+	R_HEREDOC
+}	t_redir_type;
+
+// parsing structs
+typedef struct s_token
+{
+	t_type			type;
+	char			*content;
+	int				prec;
+	struct s_token	*next;
+	struct s_token	*previous;
+}	t_token;
+
+typedef struct s_redir
+{
+	t_redir_type	redir_type;
+	char			*filename;
+	struct s_redir	*previous;
+	struct s_redir	*next;
+}	t_redir;
+
+typedef struct s_cmd
+{
+	char	**simple_cmd;
+	t_redir	*redirs;
+}	t_cmd;
+
+typedef	struct s_ast
+{
+	t_type			type;
+	struct s_ast	*left;
+	struct s_ast	*right;
+	t_cmd			*cmd;
+}	t_ast;
+
+// execution structs
+typedef struct s_env
+{
+	char			*name;
+	char			*value;
+	int				print_flag;
+	struct s_env	*next;
+}	t_env;
+
+typedef struct s_param
+{
+	t_env	*env;
+	char	**env_arr;
+	t_ast	*ast;
+}   t_param;
+
+typedef struct s_pipe  
+{
+	t_cmd			*cmd;
+	struct s_pipe	*next;
+}	t_pipe;
 
 char	*get_raw_input(void);
 void	shell_signals(void);

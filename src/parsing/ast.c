@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 15:31:32 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/14 13:47:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:09:09 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
 int	is_rediration(t_token *token)
 {
@@ -22,7 +22,8 @@ int	is_rediration(t_token *token)
 
 int	is_words(t_token *token)
 {
-	if (token->type == WORD || token->type == DQUOTE || token->type == SQUOTE)
+	// if (token->type == WORD || token->type == DQUOTE || token->type == SQUOTE)
+	if (token->type == WORD)
 		return (1);
 	return (0);
 }

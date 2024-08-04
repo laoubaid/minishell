@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   grammar.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/07/19 02:54:29 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:51:37 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
 int	simple_cmd(t_token **token)
 {
@@ -70,7 +70,7 @@ int	grammar(t_token *token)
 {
 	if (verify_grammar(&token) || token)
 	{
-		ft_putstr_fd("\e[31mparsing problem\e[0m\n", 2);
+		ft_putstr_fd("\e[31mSyntax error\e[0m\n", 2);
 		return (1);
 	}
 	// printf("\e[32mgrammar is all good\e[0m\n\n");

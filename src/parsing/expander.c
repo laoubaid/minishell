@@ -3,138 +3,322 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/01 00:52:27 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/04 18:03:01 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../include/parser.h"
 
-char	*expand_word(char *key)
+char	**array_append(char **array, char *str)
 {
-	int		i;
-	char	*env;
-	char	*word;
-
-	key++;
-	if (!ft_strncmp(key, "?", 2) || !ft_strncmp(key, "? ", 2)
-		|| !ft_strncmp(key, "?\t", 2))
-		return (ft_strdup("69"));
-	i = 0;
-	while (key[i] && key[i] != ' ' && key[i] != '\t' && key[i] != '\n')
-		i++;
-	word = ft_substr(key, 0, i);
-	if (!word)
-		return (NULL);
-	env = getenv(word);
-	free(word);
-	if (env)
-		return (ft_strdup(env));
-	else
-		return (ft_strdup(""));
-}
-
-char	*copy_word(char *old, char **keys)
-{
+	char	**new_arr;
 	int		len;
-	char	*start;
-	char	*str;
-	char	*result;
 
-	start = *keys;
-	while (**keys && **keys != ' ' && **keys != '\t' && **keys != '\n')
-		(*keys)++;
-	while (**keys && (**keys == ' ' || **keys == '\t' || **keys == '\n'))
-		(*keys)++;
-	len = *keys - start;
-	str = ft_substr(start, 0, len);
-	if (!str)
+	len = 0;
+	while (array && array[len])
+		len++;
+	len += 2;
+	new_arr = (char **)malloc(sizeof(char *) * len);
+	if (!new_arr)
 	{
-		free(old);
-		return (NULL);
+		free(str);
+		return (free_array(array));
 	}
-	if (!old)
-		return (str);
-	result = ft_strjoin(old, str);
-	free(old);
-	free(str);
-	return (result);
+	len = 0;
+	while (array && array[len])
+	{
+		new_arr[len] = array[len];
+		len++;
+	}
+	new_arr[len] = str;
+	len++;
+	new_arr[len] = NULL;
+	free(array);
+	return (new_arr);
 }
 
-char	*add_expanded_word(char *old, char *expanded_word)
+void	copy_array(char **src, char **dst, int *start)
 {
-	char	*final_str;
+	int	i;
 
-	if (!expanded_word)
+	i = 0;
+	while (src && src[i])
 	{
-		free(old);
+		dst[*start] = src[i];
+		i++;
+		(*start)++;
+	}
+	if (src)
+		free(src);
+}
+
+char	**array_join(char **array1, char **array2)
+{
+	char	**new_arr;
+	int		len1;
+	int		len2;
+
+	len1 = 0;
+	len2 = 0;
+	while (array1 && array1[len1])
+		len1++;
+	while (array2 && array2[len2])
+		len2++;
+	new_arr = (char **)malloc((len1 + len2 +1) * sizeof(char *));
+	if (!new_arr)
+	{
+		free_array(array1);
+		return (free_array(array2));
+	}
+	len1 = 0;
+	copy_array(array1, new_arr, &len1);
+	copy_array(array2, new_arr, &len1);
+	new_arr[len1] = NULL;
+	return (new_arr);
+}
+
+char	*join_str(char *str1, char *str2)
+{
+	char	*joined_str;
+
+	if (!str2)
+	{
+		if (str1)
+			free(str1);
 		return (NULL);
 	}
-	if (old)
+	else if (str1)
 	{
-		final_str = ft_strjoin(old, expanded_word);
-		free(old);
-		free(expanded_word);
+		joined_str = ft_strjoin(str1, str2);
+		free(str1);
+		free(str2);
 	}
 	else
-		final_str = expanded_word;
-	return (final_str);
+		joined_str = str2;
+	return (joined_str);
 }
 
-char	*env_str(char *keys)
+char	*get_env_ret(char *key, char *value)
 {
-	char	*str;
-	char	*word;
+	free(key);
+	return (ft_strdup(value));
+}
 
-	str = NULL;
-	while (*keys)
+char	*get_env(char **str, t_env *env)
+{
+	char	*key;
+	int		len;
+
+	len = 0;
+	while ((*str)[len] && !is_whitespace((*str)[len])
+		&& (*str)[len] != '"' && (*str)[len] != '\'')
+		len++;
+	key = ft_substr(*str, 0, len);
+	if (!key)
+		return (NULL);
+	*str += len;
+	if (!*key)
+		return (get_env_ret(key, "$"));
+	while (env && *key)
 	{
-		if (*keys == '$')
+		if (!ft_strncmp(key, env->name, len +42))
+			return (get_env_ret(key, env->value));
+		env = env->next;
+	}
+	return (get_env_ret(key, ""));
+}
+
+char	*expand_squote(char **str, char *current, char **expdd_arr)
+{
+	int	len;
+
+	len = 0;
+	(*str)++;
+	while ((*str)[len] != '\'')
+		len++;
+	current = join_str(current, ft_substr(*str, 0, len));
+	if (!current)
+		return (free_array(expdd_arr));
+	*str += len +1;
+	return (current);
+}
+
+char	*expand_dquote(char **str, t_env *env, char *current, char **expdd_arr)
+{
+	int	len;
+
+	len = 0;
+	(*str)++;
+	while ((*str)[len] != '"')
+	{
+		if ((*str)[len] == '$')
 		{
-			word = expand_word(keys);
-			str = add_expanded_word(str, word);
-			if (!str)
-				return (NULL);
-			while (*keys && *keys != ' ' && *keys != '\t' && *keys != '\n')
-				keys++;
+			current = join_str(current, ft_substr(*str, 0, len));
+			if (!current)
+				return (free_array(expdd_arr));
+			*str += len +1;
+			current = join_str(current, get_env(str, env));
+			if (!current)
+				return (free_array(expdd_arr));
+			len = 0;
 		}
 		else
-		{
-			str = copy_word(str, &keys);
-			if (!str)
-				return (NULL);
-		}
+			len++;
 	}
-	return (str);
+	current = join_str(current, ft_substr(*str, 0, len));
+	if (!current)
+		return (free_array(expdd_arr));
+	*str += len +1;
+	return (current);
 }
 
-t_token	*expand_tokens(t_token *token)
+char	*noquote_split(char ***expdd_arr, char *current, char *whitespaced)
 {
-	t_token	*t;
-	char	*str;
+	int	len;
 
-	t = token;
-	while (t)
+	len = 0;
+	while (whitespaced[len] && !is_whitespace(whitespaced[len]))
+		len++;
+	if (len)
 	{
-		if ((t->type == WORD && t->content[0] == '$') || t->type == DQUOTE)
-		{
-			if (t->type == WORD && t->content[0] == '$')
-				str = expand_word(t->content);
-			else
-				str = env_str(t->content);
-			if (!str)
-				break ;
-			free(t->content);
-			t->content = str;
-		}
-		t = t->next;
+		current = join_str(current, ft_substr(whitespaced, 0, len));
+		if (!current)
+			return (free_array(*expdd_arr));
+		whitespaced += len;
+		len = 0;
 	}
-	if (t)
+	// case whitespace found
+	while (*whitespaced)
 	{
-		clean_tokens(token);
+		*expdd_arr = array_append(*expdd_arr, current);
+		current = NULL;
+		if (!(*expdd_arr))
+			return (NULL);
+		while (is_whitespace(*whitespaced))
+			whitespaced++;
+		while (whitespaced[len] && !is_whitespace(whitespaced[len]))
+			len++;
+		if (len)
+		{
+			current = ft_substr(whitespaced, 0, len);
+			if (!current)
+				return (free_array(*expdd_arr));
+			whitespaced += len;
+			len = 0;
+		}
+	}
+	return (current);
+}
+
+char	*expand_nquote(char **str, t_env *env, char *current, char ***expdd_arr)
+{
+	char	*noquote_str;
+	int		len;
+
+	len = 0;
+	noquote_str = NULL;
+	// make a string that contains everything expanded including whitespaces (that will have to saparate the the words in this case)
+	while ((*str)[len] && (*str)[len] != '"' && (*str)[len] != '\'')
+	{
+		if ((*str)[len] == '$')
+		{
+			// expand the var
+
+			noquote_str = join_str(noquote_str, ft_substr(*str, 0, len));
+			// if (!noquote_str)
+				// return (free_array(expdd_arr));// also free current str
+			*str += len +1;
+			noquote_str = join_str(noquote_str, get_env(str, env));
+			// if (!noquote_str)
+				// return (free_array(expdd_arr));// also free current str
+			len = 0;
+		}
+		else
+			len++;
+	}
+	noquote_str = join_str(noquote_str, ft_substr(*str, 0, len));
+	current = noquote_split(expdd_arr, current, noquote_str);
+	*str += len;
+	free(noquote_str);
+	return (current);
+}
+
+char	**expand_str(char *str, t_env *env)
+{
+	char	**expdd_arr;
+	char	*current;
+
+	expdd_arr = NULL;
+	current = NULL;
+	while (*str)
+	{
+		if (*str == '\'')
+			current = expand_squote(&str, current, expdd_arr);
+		else if (*str == '"')
+			current = expand_dquote(&str, env, current, expdd_arr);
+		else
+			current = expand_nquote(&str, env, current, &expdd_arr);
+		if (!current)
+			return (NULL);
+	}
+	if (!expdd_arr && !current)
+		return (array_append(expdd_arr, ft_strdup("")));
+	expdd_arr = array_append(expdd_arr, current);
+	return (expdd_arr);
+}
+
+int	expand_args(char ***cmd_arr, t_env *env)
+{
+	char	**new_cmd_arr;
+	char	**expanded;
+	char	*str;
+	int		i;
+
+	i = 0;
+	new_cmd_arr = NULL;
+	while ((*cmd_arr)[i])
+	{
+		expanded = expand_str((*cmd_arr)[i], env);
+		if (!expanded)
+			return (1);
+		new_cmd_arr = array_join(new_cmd_arr, expanded);
+		if (!new_cmd_arr)
+			return (1);
+		i++;
+	}
+	free_array(*cmd_arr);
+	*cmd_arr = new_cmd_arr;
+	return (0);
+}
+
+int	expand_redir(t_redir **redirs, t_env *env)
+{
+	t_redir	*current;
+
+	current = *redirs;
+	while (current)
+	{
+
+		current = current->next;
+	}
+	return (0);
+}
+
+void	expand_cmd(t_param	*param)
+{
+	if (!param->ast->cmd)
+		return ;
+	if (expand_args(&param->ast->cmd->simple_cmd, param->env))
+	{
+		// malloc error (how to clean everything up)
 		exit(EXIT_FAILURE);
 	}
-	return (token);
+	if (expand_redir(&param->ast->cmd->redirs, param->env))
+	{
+		// malloc error (how to clean everything up)
+		exit(EXIT_FAILURE);
+	}
 }
