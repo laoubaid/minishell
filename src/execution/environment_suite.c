@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 12:03:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/02 11:25:51 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/07 00:25:26 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,23 +93,35 @@ int checkifvalid(char *str, int *idx)
 		
 	if (!str)
 		return ((*idx)++, 0);
-	if (!*str || *str == '=')
-	{
-		write(2, tmp, ft_strlen(tmp));
-		write(2, ": not a valid identifier\n", 25);
-		return ((*idx)++, 0);
-	}
+	if (!*str || *str == '=' || ft_isdigit(*str))
+		return (write(2, "not a valid identifier\n", 23), (*idx)++, 0);
 	while (*str && *str != '=')
 	{
-		if (!ft_isalnum(*str) || ft_isdigit(str[0]))
-		{
-			write(2, tmp, ft_strlen(tmp));
-			write(2, ": not a valid identifier\n", 25);
-			return ((*idx)++, 0);
-		}
+		if (*str == '+' && *(str + 1) == '=')
+			break ;
+		if (!ft_isalnum(*str))
+			return (write(2, "not a valid identifier\n", 23), (*idx)++, 0);
 		str++;
 	}
 	return (1);
+}
+
+char	*checkifexist_suite(char *str, int i, t_env *tmp)
+{
+	char	*tobefree;
+
+	if (str[i] == '+')
+	{
+		tobefree = strjoin_optclean("=", tmp->value, 0);
+		tobefree = strjoin_optclean(tmp->name, tobefree, 3);
+		tobefree = strjoin_optclean(tobefree, str + (i + 2), 1);
+	}
+	if (str[i] == '=')
+	{
+		free(tmp->name);
+		tobefree = ft_strdup(str);
+	}
+	return (tobefree);
 }
 
 int checkifexist(char *str, t_env *env, int *idx)
@@ -123,13 +135,11 @@ int checkifexist(char *str, t_env *env, int *idx)
 		i = ft_strlen(tmp->name);
 		if (!ft_strncmp(str, tmp->name, i))
 		{
-			if (str[i] == '=')
+			if (str[i] == '=' || str[i] == '+')
 			{
-				free(tmp->name);
-				tmp->name = ft_strdup(str);
+				tmp->name = checkifexist_suite(str, i, tmp);
 				tmp->value = env_fetch(tmp->name, tmp);
-				(*idx)++;
-				return (1);
+				return ((*idx)++, 1);
 			}
 			if (!str[i])
 				return ((*idx)++, 1);
