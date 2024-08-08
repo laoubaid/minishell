@@ -3,8 +3,8 @@ NAME = minishell
 COMPILER = cc
 
 # FLAGS = -Wall -Wextra -Werror
-# FLAGS = -fsanitize=address -g3
-FLAGS = -g3
+FLAGS = -fsanitize=address -g3
+# FLAGS = -g3
 
 SRCS = 	src/minishell.c src/parsing/parser.c src/parsing/input.c src/parsing/tokenizer.c src/parsing/expander.c src/parsing/signals.c \
 		src/parsing/ast.c src/parsing/grammar.c \

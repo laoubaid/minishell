@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/02 08:43:29 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/05 13:54:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,7 @@ void	redirecte(t_cmd *cmd, int in_count, int out_count,int apd_count)
 	outputs = malloc(sizeof(int) * out_count);
 	appends = malloc(sizeof(int) * apd_count);
 	duping(cmd->redirs, inputs, outputs, appends);
+	free(inputs);
+	free(outputs);
+	free(appends);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:09:31 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/02 11:10:30 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/05 13:42:18 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int	parser(char *input, t_ast **ast)
 	}
 	add_history(input);
 	tokens = tokenizer(input);
-	printf("------------------------these are intial tokens------------------------\n");
-	print_tokens(tokens);
-	printf("-----------------------------------------------------------------------\n\n");
+	// printf("------------------------these are intial tokens------------------------\n");
+	// print_tokens(tokens);
+	// printf("-----------------------------------------------------------------------\n\n");
 	if (grammar(tokens))
 	{
 		clean_tokens(tokens);
