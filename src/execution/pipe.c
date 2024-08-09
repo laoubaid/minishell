@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/05 13:47:40 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/09 22:28:26 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	**allocate_for_pipe(t_pipe *pip, int *n)
 	return (fd);
 }
 
-int	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
+void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 {
 	int	exit_status;
 
@@ -62,6 +62,11 @@ int	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 		close(fdout[0]);
 		dup2(fdout[1], STDOUT_FILENO);
 		close(fdout[1]);
+	}
+	if (pip->node)
+	{
+		pip->param->ast = pip->node;
+		exit (subshell(pip->param));
 	}
 	exit_status = builtins(pip->param, pip->cmd);
 	if (exit_status != -1)
