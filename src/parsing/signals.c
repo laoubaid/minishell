@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 00:02:33 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/02 11:10:37 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/10 16:25:01 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ void	quit_shell(int signal)
 void	shell_signals(void)
 {
 	signal(SIGINT, quit_shell);
+	signal(SIGQUIT, SIG_IGN);
 }

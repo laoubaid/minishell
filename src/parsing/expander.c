@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/04 23:23:23 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/07 20:01:14 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,9 @@ int	expand_args(char ***cmd_arr, t_env *env)
 	int		i;
 
 	i = 0;
-	new_cmd_arr = NULL;
+	new_cmd_arr = array_join(NULL, NULL);
+	if (!new_cmd_arr)
+		return (1);
 	while ((*cmd_arr)[i])
 	{
 		expanded = expand_str((*cmd_arr)[i], env);
