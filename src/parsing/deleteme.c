@@ -50,18 +50,21 @@ void	print_cmd(t_cmd *cmd)
 		return ;
 	crnt_redir = cmd->redirs;
 	printf("--------------------------------- cmd ---------------------------------\n");
-	if ((cmd->simple_cmd)[0])
-		printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
-	else
-		printf("cmd name: NULL\n");
-	printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
-	if ((cmd->simple_cmd)[0])
+	if (cmd->simple_cmd)
 	{
-		int i = 1;
-		while ((cmd->simple_cmd)[i])
+		if ((cmd->simple_cmd)[0])
+			printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
+		else
+			printf("cmd name: NULL\n");
+		printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
+		if ((cmd->simple_cmd)[0])
 		{
-			printf("%s -> ", (cmd->simple_cmd)[i]);
-			i++;
+			int i = 1;
+			while ((cmd->simple_cmd)[i])
+			{
+				printf("%s -> ", (cmd->simple_cmd)[i]);
+				i++;
+			}
 		}
 	}
 	printf("NULL\n");
