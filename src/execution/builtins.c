@@ -6,9 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/02 11:25:21 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/07 00:30:09 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../../include/minishell.h"
+#include "../../include/execution.h"
 
 #include "../../include/minishell.h"
 #include "../../include/execution.h"
@@ -22,7 +25,7 @@ int	ft_echo(char **cmd)
 	flag = 0;
 	if (cmd[1])
 	{
-		if (!ft_strncmp("-n", cmd[1], 3))
+		if (!ft_strncmp("-n", cmd[1], 2))
 		{
 			flag = 1;
 			i++;
@@ -40,7 +43,7 @@ int	ft_echo(char **cmd)
 	return (0);
 }
 
-int	ft_exit(char **cmd)
+int	ft_exit(char **cmd, t_param *param)
 {
 	int	i;
 
@@ -49,14 +52,15 @@ int	ft_exit(char **cmd)
 	{
 		while (cmd[1][i])
 		{
-			if (!ft_isdigit(cmd[1][i]))
+			if (!ft_isdigit(cmd[1][i]) && cmd[1][i] != '-' && cmd[1][i] != '+')
 			{
 				write(2, "numeric argument required\n", 26);
+				// clean the programme
 				exit(2);
 			}
 			i++;
 		}
-		if (!cmd[2])
+		if (!cmd[2]) // clean here as well
 			exit(ft_atoi(cmd[1]));
 		else
 		{
@@ -64,6 +68,7 @@ int	ft_exit(char **cmd)
 			return (1);
 		}
 	}
+	// also clean this area
 	exit(1);
 }
 
@@ -108,7 +113,7 @@ int ft_export(t_param *param , char **cmd)
 	return (0);
 }
 
-int	builtins(t_param *param, char **cmd)
+int	builtins(t_param *param, t_cmd *cmd)
 {
 	int		fd[2];
 	int		exit_status;
@@ -116,21 +121,21 @@ int	builtins(t_param *param, char **cmd)
 	exit_status = -1;
 	fd[0] = dup(STDIN_FILENO);
 	fd[1] = dup(STDOUT_FILENO);
-	redirecte(param->ast->cmd, 0, 0, 0);
-	if (!ft_strncmp(cmd[0], "cd", 2))
-		exit_status = ft_cd(param);									//done V
-	else if (!ft_strncmp(cmd[0], "echo", 4))
-		exit_status = ft_echo(cmd);									//done V
-	else if (!ft_strncmp(cmd[0], "pwd", 3))
-		exit_status = ft_pwd(param);										//done V
-	else if (!ft_strncmp(cmd[0], "export", 6))
-		exit_status = ft_export(param, cmd);						//done (almost) v
-	else if (!ft_strncmp(cmd[0], "unset", 5))
-		exit_status = ft_unset(param, cmd);							//done V
-	else if (!ft_strncmp(cmd[0], "env", 3))
+	redirecte(cmd, 0, 0, 0);
+	if (!ft_strncmp(cmd->simple_cmd[0], "cd", 2))
+		exit_status = ft_cd(param, cmd);							//done V
+	else if (!ft_strncmp(cmd->simple_cmd[0], "echo", 4))
+		exit_status = ft_echo(cmd->simple_cmd);						//done V
+	else if (!ft_strncmp(cmd->simple_cmd[0], "pwd", 3))
+		exit_status = ft_pwd(param);								//done V
+	else if (!ft_strncmp(cmd->simple_cmd[0], "export", 6))
+		exit_status = ft_export(param, cmd->simple_cmd);			//done (almost) v
+	else if (!ft_strncmp(cmd->simple_cmd[0], "unset", 5))
+		exit_status = ft_unset(param, cmd->simple_cmd);				//done V
+	else if (!ft_strncmp(cmd->simple_cmd[0], "env", 3))
 		exit_status = ft_env(param);								//done V
-	else if (!ft_strncmp(cmd[0], "exit", 4))
-		exit_status = ft_exit(cmd);									//done V
+	else if (!ft_strncmp(cmd->simple_cmd[0], "exit", 4))
+		exit_status = ft_exit(cmd->simple_cmd, param);						//done V
 	dup2(fd[0], STDIN_FILENO);
 	dup2(fd[1], STDOUT_FILENO);
 	return (close(fd[0]), close(fd[1]), exit_status);

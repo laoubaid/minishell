@@ -6,12 +6,25 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/01 01:19:21 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/09 22:28:26 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "../../include/execution.h"
+
+void	free_pipe(t_pipe *pip)
+{
+	t_pipe	*tmp;
+
+	while (pip->next)
+	{
+		tmp = pip->next;
+		free(pip);
+		pip = tmp;
+	}
+	free(pip);
+}
 
 int	**allocate_for_pipe(t_pipe *pip, int *n)
 {
@@ -34,7 +47,7 @@ int	**allocate_for_pipe(t_pipe *pip, int *n)
 	return (fd);
 }
 
-int	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
+void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 {
 	int	exit_status;
 
@@ -50,6 +63,14 @@ int	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 		dup2(fdout[1], STDOUT_FILENO);
 		close(fdout[1]);
 	}
+	if (pip->node)
+	{
+		pip->param->ast = pip->node;
+		exit (subshell(pip->param));
+	}
+	exit_status = builtins(pip->param, pip->cmd);
+	if (exit_status != -1)
+		exit (exit_status);
 	if (!check_if_path(pip->cmd->simple_cmd[0]))
 		path(&(pip->cmd->simple_cmd), env[getpath(env, "PATH=")]);
 	redirecte(pip->cmd, 0, 0, 0);

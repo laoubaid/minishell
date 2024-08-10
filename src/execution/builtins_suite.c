@@ -6,13 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:21:25 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/02 11:31:21 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/05 14:39:35 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "../../include/execution.h"
-
 
 char	*get_env(t_param *param, char *find)
 {
@@ -47,15 +46,15 @@ int	ft_pwd(t_param *param)
 	return (0);
 }
 
-int	ft_cd(t_param *param)
+int	ft_cd(t_param *param, t_cmd	*cmd)
 {
-	if (param->ast->cmd->simple_cmd[1])
+	if (cmd->simple_cmd[1])
 	{
-		if (param->ast->cmd->simple_cmd[2])
+		if (cmd->simple_cmd[2])
 			return (write(2, "cd: too many arguments\n", 23), 1);
-		if (chdir_errors(param->ast->cmd->simple_cmd[1]))
+		if (chdir_errors(cmd->simple_cmd[1]))
 			return (1);
-		if (chdir(param->ast->cmd->simple_cmd[1]) == 0)
+		if (chdir(cmd->simple_cmd[1]) == 0)
 		{
 			env_edit(param, "OLDPWD", get_env(param, "PWD"));
 			env_edit(param, "PWD", getcwd(NULL, 0));
@@ -73,7 +72,7 @@ int	ft_cd(t_param *param)
 			return (0);
 		}
 	}
-	return (perror(param->ast->cmd->simple_cmd[1]), 1);
+	return (perror(cmd->simple_cmd[1]), 1);
 }
 
 void	ft_unset_suite(t_param *param, t_env *env, t_env *tmp)

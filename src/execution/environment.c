@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 17:42:18 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/01 01:15:05 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/06 23:32:53 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,12 @@
 
 char	*env_fetch(char *var, t_env *tmp)
 {
-	while (*var && *var != '=')
+	if (!var)
+		return (NULL);
+	while (*var && *var != '=' && *var != '+')
 		var++;
+	if (*var == '+')
+		*(var++) = 0;
 	if (*var == '=')
 	{
 		*var = 0;
