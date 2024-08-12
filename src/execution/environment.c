@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 17:42:18 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/06 23:32:53 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 char	*env_fetch(char *var, t_env *tmp)
 {

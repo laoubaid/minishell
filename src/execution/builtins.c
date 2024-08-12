@@ -6,15 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/07 00:30:09 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
-
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 int	ft_echo(char **cmd)
 {
@@ -23,13 +20,14 @@ int	ft_echo(char **cmd)
 
 	i = 1;
 	flag = 0;
-	if (cmd[1])
+	if (cmd[1] && !ft_strncmp("-n", cmd[1], 2))
 	{
-		if (!ft_strncmp("-n", cmd[1], 2))
-		{
-			flag = 1;
+		while (cmd[1][i] == 'n')
 			i++;
-		}
+		if (!(cmd[1][i]) && ++flag)
+			i = 2;
+		else
+			i = 1;
 	}
 	while (cmd[i])
 	{

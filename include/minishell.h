@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/09 17:26:04 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 20:06:38 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ typedef struct s_param
 	t_env	*env;
 	char	**env_arr;
 	t_ast	*ast;
+	int		exit_status;
+	t_ast	*head;
 }   t_param;
 
 typedef struct s_pipe  

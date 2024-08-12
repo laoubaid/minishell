@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 12:03:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/07 00:25:26 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 char	**recreate_env(t_env *env_list, char **env)
 {

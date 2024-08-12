@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/09 18:59:20 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:31:41 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 int	command_execution(t_param *param)
 {
@@ -26,7 +26,7 @@ int	command_execution(t_param *param)
 		path(&cmd, (param->env_arr)[getpath(param->env_arr, "PATH=")]);
 	if (!fork())
 	{
-		redirecte(param->ast->cmd, 0, 0, 0);
+		redirecte(param->ast->cmd, 1, 0, 0);
 		exit_status = execution_errors(cmd[0]);
 		if (exit_status)
 			exit(exit_status);
@@ -80,7 +80,7 @@ int	subshell(t_param *param)
 	if (!pid)
 	{
 		if (param->ast->cmd != NULL)
-			redirecte(param->ast->cmd, 0, 0, 0);
+			redirecte(param->ast->cmd, 1, 0, 0);
 		param->ast = param->ast->left;
 		exit(execute(param));
 	}
@@ -121,11 +121,23 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	return (pip);
 }
 
+int openfiles(t_param *param)
+{
+	if (!fork())
+	{
+		redirecte(param->ast->cmd, 1, 0, 0);
+		exit(0);
+	}
+	wait(NULL);
+	return (0);
+}
+
 int	execute(t_param *param)
 {
 	int		exit_status;
 	t_pipe	*pip;
 
+	exit_status = 0;
 	if (param->ast->type == OR || param->ast->type == AND)
 		exit_status = handle_operations(param);
 	else if (param->ast->type == PIPE)
@@ -136,7 +148,9 @@ int	execute(t_param *param)
 	}
 	else if (param->ast->type == LPAREN)
 		exit_status = subshell(param);
-	else
+	else if (param->ast->cmd->simple_cmd[0])
 		exit_status = command_execution(param);
+	else
+		exit_status = openfiles(param);
 	return (exit_status);
 }

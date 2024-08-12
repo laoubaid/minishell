@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:21:25 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/05 14:39:35 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 char	*get_env(t_param *param, char *find)
 {

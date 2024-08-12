@@ -1,4 +1,4 @@
-#include "../../include/parser.h"
+#include "parser.h"
 
 void	print_tokens(t_token *tokens)
 {
@@ -57,11 +57,19 @@ void	print_cmd(t_cmd *cmd)
 	printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
 	if ((cmd->simple_cmd)[0])
 	{
-		int i = 1;
-		while ((cmd->simple_cmd)[i])
+		if ((cmd->simple_cmd)[0])
+			printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
+		else
+			printf("cmd name: NULL\n");
+		printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
+		if ((cmd->simple_cmd)[0])
 		{
-			printf("%s -> ", (cmd->simple_cmd)[i]);
-			i++;
+			int i = 1;
+			while ((cmd->simple_cmd)[i])
+			{
+				printf("%s -> ", (cmd->simple_cmd)[i]);
+				i++;
+			}
 		}
 	}
 	printf("NULL\n");

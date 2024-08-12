@@ -6,12 +6,14 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/09 19:00:58 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:33:03 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTION_H
 # define EXECUTION_H
+
+# define BUFFER_SIZE 1
 
 # include <sys/wait.h>
 # include <sys/stat.h>
@@ -59,5 +61,7 @@ int		checkifvalid(char *str, int *idx);
 int		checkifexist(char *str, t_env *env, int *idx);
 char	*env_fetch(char *var, t_env *tmp);
 char	**recreate_env(t_env *env_list, char **env);
+
+int	ft_heredoc(char *limiter);
 
 #endif
