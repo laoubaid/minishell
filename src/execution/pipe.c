@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/09 22:28:26 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 23:56:13 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/execution.h"
+#include "minishell.h"
+#include "execution.h"
 
 void	free_pipe(t_pipe *pip)
 {
@@ -73,7 +73,7 @@ void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 		exit (exit_status);
 	if (!check_if_path(pip->cmd->simple_cmd[0]))
 		path(&(pip->cmd->simple_cmd), env[getpath(env, "PATH=")]);
-	redirecte(pip->cmd, 0, 0, 0);
+	redirecte(pip->cmd, 1, 0, 0);
 	exit_status = execution_errors(pip->cmd->simple_cmd[0]);
 	if (exit_status)
 		exit(exit_status);

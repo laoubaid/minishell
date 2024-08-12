@@ -6,12 +6,12 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/10 21:54:14 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 20:07:29 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/parser.h"
-#include "../include/execution.h"
+#include "parser.h"
+#include "execution.h"
 
 int	main(int argc, char **argv, char **env)
 {
@@ -36,18 +36,15 @@ int	main(int argc, char **argv, char **env)
 			continue;
 		if (param->ast)
 		{
-			print_ast(param->ast);
-			printf("after expansion: \n");
+			// print_ast(param->ast);
+			// printf("after expansion: \n");
 			expand_cmd(param);
-			print_ast(param->ast);
+			// print_ast(param->ast);
 		}
-		// exit_status = execute(param);
-		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
-		param->ast = clean_ast(param->ast);
-		// print_ast(param->ast);
-		// exit_status = execute(param);
-		// printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
-		// clean_ast(param->ast);
+		param->head = param->ast;
+		exit_status = execute(param);
+		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		clean_ast(param->ast);
 	}
 	return (0);
 }

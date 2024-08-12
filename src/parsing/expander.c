@@ -6,11 +6,11 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/04 23:23:23 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "parser.h"
 
 char	**array_append(char **array, char *str)
 {
@@ -294,7 +294,9 @@ int	expand_args(char ***cmd_arr, t_env *env)
 	int		i;
 
 	i = 0;
-	new_cmd_arr = NULL;
+	new_cmd_arr = array_join(NULL, NULL);
+	if (!new_cmd_arr)
+		return (1);
 	while ((*cmd_arr)[i])
 	{
 		expanded = expand_str((*cmd_arr)[i], env);

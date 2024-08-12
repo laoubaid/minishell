@@ -10,7 +10,7 @@ SRCS = 	src/minishell.c src/parsing/parser.c src/parsing/input.c src/parsing/tok
 		src/parsing/ast.c src/parsing/grammar.c \
 		src/execution/execute.c src/execution/path.c src/execution/split.c src/execution/redirecte.c src/execution/errors.c \
 		src/execution/pipe.c src/execution/environment.c src/execution/builtins.c src/execution/utils.c \
-		src/execution/builtins_suite.c src/execution/environment_suite.c\
+		src/execution/builtins_suite.c src/execution/environment_suite.c src/execution/heredoc.c \
 		src/parsing/deleteme.c #to be deleted
 
 LIBFT = libft/libft.a
@@ -30,7 +30,7 @@ $(LIBFT):
 		$(MAKE) -C libft
 
 .c.o:
-	$(COMPILER) -c $(FLAGS) $< -o $@
+	$(COMPILER) -I./include/ -c $(FLAGS) $< -o $@
 
 clean:
 		$(MAKE) -C libft clean

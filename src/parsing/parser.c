@@ -6,11 +6,11 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:09:31 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/05 13:42:18 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/parser.h"
+#include "parser.h"
 
 char	all_whitespace(char *str)
 {
@@ -48,7 +48,6 @@ int	parser(char *input, t_ast **ast)
 		*ast = NULL;
 		return (1);
 	}
-	// tokens = expand_tokens(tokens);
 	*ast = build_ast(tokens);
 	clean_tokens(tokens);
 	return (0);

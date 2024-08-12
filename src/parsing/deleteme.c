@@ -1,4 +1,4 @@
-#include "../../include/parser.h"
+#include "parser.h"
 
 void	print_tokens(t_token *tokens)
 {
@@ -50,7 +50,12 @@ void	print_cmd(t_cmd *cmd)
 		return ;
 	crnt_redir = cmd->redirs;
 	printf("--------------------------------- cmd ---------------------------------\n");
-	if (cmd->simple_cmd)
+	if ((cmd->simple_cmd)[0])
+		printf("cmd name: %s|\n", (cmd->simple_cmd)[0]);
+	else
+		printf("cmd name: NULL|\n");
+	printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
+	if ((cmd->simple_cmd)[0])
 	{
 		if ((cmd->simple_cmd)[0])
 			printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
