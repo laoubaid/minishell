@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/12 14:31:41 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:53:12 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	command_execution(t_param *param)
 		path(&cmd, (param->env_arr)[getpath(param->env_arr, "PATH=")]);
 	if (!fork())
 	{
+		signal(SIGINT, SIG_DFL);
 		redirecte(param->ast->cmd, 1, 0, 0);
 		exit_status = execution_errors(cmd[0]);
 		if (exit_status)
@@ -39,6 +40,8 @@ int	command_execution(t_param *param)
 	wait(&exit_status);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
+	if (WIFSIGNALED(exit_status))
+		return (130);
 	return (-1);
 }
 
