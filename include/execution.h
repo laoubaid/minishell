@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:00:50 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:47:31 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	**ft_free(char **ptr);
 int		path(char ***p, char *ev);
 int		getpath(char **ev, char *comp);
 
-void	redirecte(t_redir *redir);
+int		redirecte(t_redir *redir);
 
 /* diffrent main programme functions */
 int	subshell(t_param *param);
