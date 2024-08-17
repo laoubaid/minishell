@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:05:42 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:49:27 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	command_execution(t_param *param)
 		return (WEXITSTATUS(exit_status));
 	if (WIFSIGNALED(exit_status))
 		return (130);
-	return (-1);
+	return (1);
 }
 
 
@@ -91,7 +91,7 @@ int	subshell(t_param *param)
 	wait(&exit_status);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
-	return (-1);
+	return (1);
 }
 
 t_pipe	*pipeline(t_ast *ast, t_param *param)
@@ -120,21 +120,20 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	tmp->node = NULL;
 	if (ast->right->type == LPAREN)
 		tmp->node = ast->right;
-	tmp->cmd = ast->right->cmd;
-	tmp->next = NULL;
-	return (pip);
+	return (tmp->cmd = ast->right->cmd, tmp->next = NULL, pip);
 }
 
 int openfiles(t_param *param)
 {
+	int	exit_status;
+
 	heredoc(param);
 	if (!fork())
-	{
-		redirecte(param->ast->cmd->redirs);
-		exit(0);
-	}
-	wait(NULL);
-	return (0);
+		exit(redirecte(param->ast->cmd->redirs));
+	wait(&exit_status);
+	if (WIFEXITED(exit_status))
+		return (WEXITSTATUS(exit_status));
+	return (1);
 }
 
 int	execute(t_param *param)

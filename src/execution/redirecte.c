@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:06:12 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:41:28 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	pipe_heredoc(t_pipe *pip)
 	}
 }
 
-void	redirecte(t_redir *tmp)
+int	redirecte(t_redir *tmp)
 {
 	int	output;
 	int	input;
@@ -74,10 +74,13 @@ void	redirecte(t_redir *tmp)
 			output = open(tmp->filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 		else if (tmp->redir_type == R_APPEND)
 			output = open(tmp->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
+		if (input == -1 || output == -1)
+			return (1);
 		tmp = tmp->next;
 	}
 	if (input > 0)
 		dup2(input, STDIN_FILENO);
 	if (output > 0)
 		dup2(output, STDOUT_FILENO);
+	return (0);
 }
