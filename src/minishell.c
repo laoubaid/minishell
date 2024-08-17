@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/11 20:07:29 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:13:02 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	main(int argc, char **argv, char **env)
 	char	*buffer;
 	t_param *param;
 	int		syntax_error;
-	int		exit_status;
 
 	syntax_error = 0;
 	param = param_init(env);
@@ -42,8 +41,8 @@ int	main(int argc, char **argv, char **env)
 			// print_ast(param->ast);
 		}
 		param->head = param->ast;
-		exit_status = execute(param);
-		printf("----------------------------------------------------------------------\nexit code: %d\n", exit_status);
+		param->exit_status = execute(param);
+		printf("----------------------------------------------------------------------\nexit code: %d\n", param->exit_status);
 		clean_ast(param->ast);
 	}
 	return (0);

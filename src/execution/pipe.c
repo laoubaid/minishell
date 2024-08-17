@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 23:56:13 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 16:38:45 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 		exit (exit_status);
 	if (!check_if_path(pip->cmd->simple_cmd[0]))
 		path(&(pip->cmd->simple_cmd), env[getpath(env, "PATH=")]);
-	redirecte(pip->cmd, 1, 0, 0);
+	redirecte(pip->cmd->redirs);
 	exit_status = execution_errors(pip->cmd->simple_cmd[0]);
 	if (exit_status)
 		exit(exit_status);
@@ -118,7 +118,7 @@ int	handle_pipe(t_pipe *pip, char **env)
 	int	count;
 	int	i;
 	int	pid;
-		
+
 	i = 0;
 	exit_status = 0;
 	fd = allocate_for_pipe(pip, &count);

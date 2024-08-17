@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 15:31:32 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:35:00 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ t_redir	*new_redir(t_token *token, t_redir *previous)
 	else if (token->type == DLESS)
 		redir->redir_type = R_HEREDOC;
 	token = token->next;
+	redir->limiter = NULL;
 	redir->filename = ft_strdup(token->content);
 	if (!(redir->filename))
 	{
