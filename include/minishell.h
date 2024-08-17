@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/11 20:06:38 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:33:20 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_redir
 {
 	t_redir_type	redir_type;
 	char			*filename;
+	char			*limiter;
 	struct s_redir	*previous;
 	struct s_redir	*next;
 }	t_redir;

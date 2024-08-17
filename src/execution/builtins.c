@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/17 16:37:59 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int	builtins(t_param *param, t_cmd *cmd)
 	exit_status = -1;
 	fd[0] = dup(STDIN_FILENO);
 	fd[1] = dup(STDOUT_FILENO);
-	redirecte(cmd, 0, 0, 0);
+	redirecte(cmd->redirs);
 	if (!ft_strncmp(cmd->simple_cmd[0], "cd", 2))
 		exit_status = ft_cd(param, cmd);							//done V
 	else if (!ft_strncmp(cmd->simple_cmd[0], "echo", 4))

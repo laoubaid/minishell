@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/14 12:53:12 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:05:42 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	command_execution(t_param *param)
 	int		exit_status;
 
 	cmd = param->ast->cmd->simple_cmd;
+	heredoc(param);
 	exit_status = builtins(param, param->ast->cmd);
 	if (exit_status != -1)
 		return (exit_status);
@@ -27,7 +28,7 @@ int	command_execution(t_param *param)
 	if (!fork())
 	{
 		signal(SIGINT, SIG_DFL);
-		redirecte(param->ast->cmd, 1, 0, 0);
+		redirecte(param->ast->cmd->redirs);
 		exit_status = execution_errors(cmd[0]);
 		if (exit_status)
 			exit(exit_status);
@@ -83,7 +84,7 @@ int	subshell(t_param *param)
 	if (!pid)
 	{
 		if (param->ast->cmd != NULL)
-			redirecte(param->ast->cmd, 1, 0, 0);
+			redirecte(param->ast->cmd->redirs);
 		param->ast = param->ast->left;
 		exit(execute(param));
 	}
@@ -126,9 +127,10 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 
 int openfiles(t_param *param)
 {
+	heredoc(param);
 	if (!fork())
 	{
-		redirecte(param->ast->cmd, 1, 0, 0);
+		redirecte(param->ast->cmd->redirs);
 		exit(0);
 	}
 	wait(NULL);
@@ -146,6 +148,7 @@ int	execute(t_param *param)
 	else if (param->ast->type == PIPE)
 	{
 		pip = pipeline(param->ast, param);
+		pipe_heredoc(pip);
 		exit_status = handle_pipe(pip, param->env_arr);
 		free_pipe(pip);
 	}
