@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 15:56:17 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:01:24 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,21 +131,22 @@ int	builtins(t_param *param, t_cmd *cmd)
 	exit_status = -1;
 	fd[0] = dup(STDIN_FILENO);
 	fd[1] = dup(STDOUT_FILENO);
-	redirecte(cmd->redirs);
+	if (redirecte(cmd->redirs) == 1)
+		return (1);
 	if (!ft_strncmp(cmd->simple_cmd[0], "cd", 2))
-		exit_status = ft_cd(param, cmd);							//done V
+		exit_status = ft_cd(param, cmd);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "echo", 4))
-		exit_status = ft_echo(cmd->simple_cmd, param);						//done V
+		exit_status = ft_echo(cmd->simple_cmd, param);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "pwd", 3))
-		exit_status = ft_pwd(param);								//done V
+		exit_status = ft_pwd(param);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "export", 6))
-		exit_status = ft_export(param, cmd->simple_cmd);			//done (almost) v
+		exit_status = ft_export(param, cmd->simple_cmd);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "unset", 5))
-		exit_status = ft_unset(param, cmd->simple_cmd);				//done V
+		exit_status = ft_unset(param, cmd->simple_cmd);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "env", 3))
-		exit_status = ft_env(param);								//done V
+		exit_status = ft_env(param);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "exit", 4))
-		exit_status = ft_exit(cmd->simple_cmd, param);						//done V
+		exit_status = ft_exit(cmd->simple_cmd, param);
 	dup2(fd[0], STDIN_FILENO);
 	dup2(fd[1], STDOUT_FILENO);
 	return (close(fd[0]), close(fd[1]), exit_status);

@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 16:18:53 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:01:53 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int	redirecte(t_redir *tmp)
 	input = 0;
 	while (tmp)
 	{
+		if (tmp->filename == NULL)
+			return (ft_putstr_fd("ambiguous redirect\n", 2), 1);
 		if (tmp->redir_type == R_STD_IN)
 			input = open(tmp->filename, O_RDONLY);
 		else if (tmp->redir_type == R_STD_OUT)
@@ -73,7 +75,7 @@ int	redirecte(t_redir *tmp)
 		else if (tmp->redir_type == R_APPEND)
 			output = open(tmp->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
 		if (input == -1 || output == -1)
-			return (1);
+			return (perror(""), 1);
 		tmp = tmp->next;
 	}
 	if (input > 0)
