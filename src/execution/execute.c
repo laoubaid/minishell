@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:49:27 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 23:18:25 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	command_execution(t_param *param)
 	char	**cmd;
 	int		exit_status;
 
+	expand_cmd(param);
 	cmd = param->ast->cmd->simple_cmd;
 	heredoc(param);
 	exit_status = builtins(param, param->ast->cmd);
@@ -39,6 +40,7 @@ int	command_execution(t_param *param)
 		exit(127);
 	}
 	wait(&exit_status);
+	env_edit(param, "_", cmd[0], 1);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
 	if (WIFSIGNALED(exit_status))
@@ -104,11 +106,13 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	else
 	{
 		pip = malloc(sizeof(t_pipe));
+		param->ast = ast->left;
+		expand_cmd(param);
 		pip->param = param;
 		pip->node = NULL;
 		if (ast->left->type == LPAREN)
-			pip->node = ast->left;
-		pip->cmd = ast->left->cmd;
+			pip->node = param->ast;
+		pip->cmd = param->ast->cmd;
 		pip->next = NULL;
 	}
 	tmp = pip;
@@ -116,17 +120,21 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 		tmp = tmp->next;
 	tmp->next = malloc(sizeof(t_pipe));
 	tmp = tmp->next;
+	param->ast = ast->right;
+	expand_cmd(param);
 	tmp->param = param;
 	tmp->node = NULL;
 	if (ast->right->type == LPAREN)
-		tmp->node = ast->right;
-	return (tmp->cmd = ast->right->cmd, tmp->next = NULL, pip);
+		tmp->node = param->ast;
+	return (tmp->cmd = param->ast->cmd, tmp->next = NULL, pip);
 }
 
 int openfiles(t_param *param)
 {
 	int	exit_status;
 
+	expand_cmd(param);
+	// there is a leak after this one
 	heredoc(param);
 	if (!fork())
 		exit(redirecte(param->ast->cmd->redirs));

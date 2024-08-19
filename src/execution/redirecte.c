@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:41:28 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:18:53 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	heredoc(t_param *param)
 	{
 		if (tmp->redir_type == R_HEREDOC)
 		{
-			tmp->limiter = tmp->filename;
 			tmp->filename = ft_heredoc(tmp->filename, i);
 			tmp->redir_type = R_STD_IN;
 			i++;
@@ -48,7 +47,6 @@ void	pipe_heredoc(t_pipe *pip)
 		{
 			if (tmp->redir_type == R_HEREDOC)
 			{
-				tmp->limiter = tmp->filename;
 				tmp->filename = ft_heredoc(tmp->filename, i);
 				tmp->redir_type = R_STD_IN;
 				i++;

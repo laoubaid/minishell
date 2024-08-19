@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/17 17:13:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 23:14:34 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,29 +21,21 @@ int	main(int argc, char **argv, char **env)
 
 	syntax_error = 0;
 	param = param_init(env);
+	if (!param)
+		return (1);
 	// if param is null (protect!!!)
 	param->ast = NULL;// fixed jumb condition (var not initialized error)
 	shell_signals();
 	while (1)
 	{
-		if (syntax_error)
-			buffer = readline("\e[31m➜  \e[36mMiniShell\e[0m ");
-		else
-			buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
+		buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		syntax_error = parser(buffer, &(param->ast));
 		if (syntax_error)
 			continue;
-		if (param->ast)
-		{
-			// print_ast(param->ast);
-			// printf("after expansion: \n");
-			expand_cmd(param);
-			// print_ast(param->ast);
-		}
 		param->head = param->ast;
 		param->exit_status = execute(param);
 		printf("----------------------------------------------------------------------\nexit code: %d\n", param->exit_status);
-		clean_ast(param->ast);
+		clean_ast(param->head);
 	}
 	return (0);
 }

@@ -6,14 +6,14 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 16:37:59 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 15:56:17 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "execution.h"
 
-int	ft_echo(char **cmd)
+int	ft_echo(char **cmd, t_param *param)
 {
 	int	flag;
 	int	i;
@@ -32,13 +32,26 @@ int	ft_echo(char **cmd)
 	while (cmd[i])
 	{
 		write(1, cmd[i], ft_strlen(cmd[i]));
+		env_edit(param, "_", cmd[i], 1);
 		if (cmd[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
 	if (!flag)
 		write(1, "\n", 1);
+	
 	return (0);
+}
+
+void	clean_exit(char *value, char *msg, int exit_status, t_param *param)
+{
+	if (msg && value)
+	{
+		write(2, value, ft_strlen(value));
+		write(2, msg, ft_strlen(msg));
+	}
+	//clean param here
+	exit(exit_status);
 }
 
 int	ft_exit(char **cmd, t_param *param)
@@ -48,26 +61,23 @@ int	ft_exit(char **cmd, t_param *param)
 	i = 0;
 	if (cmd[1])
 	{
+		if (ft_strlen(cmd[1]) > 19)
+			clean_exit(cmd[1], ": numeric argument required\n", 2, param);
+		if (cmd[1][1] == '-' && cmd[1][1] == '+')
+			i++;
 		while (cmd[1][i])
 		{
-			if (!ft_isdigit(cmd[1][i]) && cmd[1][i] != '-' && cmd[1][i] != '+')
-			{
-				write(2, "numeric argument required\n", 26);
-				// clean the programme
-				exit(2);
-			}
+			if (!ft_isdigit(cmd[1][i]))
+				clean_exit(NULL, ": numeric argument required\n", 2, param);
 			i++;
 		}
-		if (!cmd[2]) // clean here as well
-			exit(ft_atoi(cmd[1]));
+		if (!cmd[2])
+			clean_exit(NULL, NULL, ft_atoi(cmd[1]), param);
 		else
-		{
-			write(2, "exit: too many arguments\n", 25);
-			return (1);
-		}
+			return (write(2, "exit: too many arguments\n", 25), 1);
 	}
-	// also clean this area
-	exit(1);
+	clean_exit(NULL, NULL, 1, param);
+	return (1);
 }
 
 int ft_env(t_param *param)
@@ -82,6 +92,7 @@ int ft_env(t_param *param)
 		write(1, "\n", 1);
 		tmp++;
 	}
+	env_edit(param, "_", "env", 1);
 	return (0);
 }
 
@@ -108,6 +119,7 @@ int ft_export(t_param *param , char **cmd)
 		i++;
 	}
 	param->env_arr = recreate_env(param->env, NULL);
+	env_edit(param, "_", "export", 1);
 	return (0);
 }
 
@@ -123,7 +135,7 @@ int	builtins(t_param *param, t_cmd *cmd)
 	if (!ft_strncmp(cmd->simple_cmd[0], "cd", 2))
 		exit_status = ft_cd(param, cmd);							//done V
 	else if (!ft_strncmp(cmd->simple_cmd[0], "echo", 4))
-		exit_status = ft_echo(cmd->simple_cmd);						//done V
+		exit_status = ft_echo(cmd->simple_cmd, param);						//done V
 	else if (!ft_strncmp(cmd->simple_cmd[0], "pwd", 3))
 		exit_status = ft_pwd(param);								//done V
 	else if (!ft_strncmp(cmd->simple_cmd[0], "export", 6))
