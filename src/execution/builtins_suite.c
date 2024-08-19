@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:21:25 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:00:26 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	ft_pwd(t_param *param)
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	free(pwd);
+	env_edit(param, "_", "pwd", 1);
 	return (0);
 }
 
@@ -56,8 +57,8 @@ int	ft_cd(t_param *param, t_cmd	*cmd)
 			return (1);
 		if (chdir(cmd->simple_cmd[1]) == 0)
 		{
-			env_edit(param, "OLDPWD", get_env(param, "PWD"));
-			env_edit(param, "PWD", getcwd(NULL, 0));
+			env_edit(param, "OLDPWD", get_env(param, "PWD"), 3);
+			env_edit(param, "PWD", getcwd(NULL, 0), 3);
 			return (0);
 		}
 	}
@@ -67,8 +68,8 @@ int	ft_cd(t_param *param, t_cmd	*cmd)
 			return (write(2, "cd: HOME not set\n", 17), 1);
 		if (!chdir((param->env_arr)[getpath(param->env_arr, "HOME=")] + 5))
 		{
-			env_edit(param, "OLDPWD", get_env(param, "PWD"));
-			env_edit(param, "PWD", getcwd(NULL, 0));
+			env_edit(param, "OLDPWD", get_env(param, "PWD"), 3);
+			env_edit(param, "PWD", getcwd(NULL, 0), 3);
 			return (0);
 		}
 	}
@@ -111,5 +112,6 @@ int	ft_unset(t_param *param, char **cmd)
 		}
 		i++;
 	}
+	env_edit(param, "_", "unset", 1);
 	return (0);
 }

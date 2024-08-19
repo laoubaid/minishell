@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 12:03:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:54:59 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	**recreate_env(t_env *env_list, char **env)
 	return (env[i] = NULL, env);
 }
 
-int	env_edit(t_param *param, char *find, char *value)
+int	env_edit(t_param *param, char *find, char *value, int flag)
 {
 	t_env	*tmp;
 
@@ -53,8 +53,9 @@ int	env_edit(t_param *param, char *find, char *value)
 		{
 			free(tmp->name);
 			tmp->name = strjoin_optclean(find, "=", 0);
-			tmp->name = strjoin_optclean(tmp->name, value, 3);
+			tmp->name = strjoin_optclean(tmp->name, value, flag);
 			tmp->value = env_fetch(tmp->name, tmp);
+			ft_free(param->env_arr);
 			param->env_arr = recreate_env(param->env, NULL);
 			return (0);
 		}

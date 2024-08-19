@@ -21,6 +21,8 @@ int	main(int argc, char **argv, char **env)
 
 	syntax_error = 0;
 	param = param_init(env);
+	if (!param)
+		return (1);
 	// if param is null (protect!!!)
 	param->ast = NULL;// fixed jumb condition (var not initialized error)
 	shell_signals();
@@ -33,7 +35,7 @@ int	main(int argc, char **argv, char **env)
 		param->head = param->ast;
 		param->exit_status = execute(param);
 		printf("----------------------------------------------------------------------\nexit code: %d\n", param->exit_status);
-		clean_ast(param->ast);
+		clean_ast(param->head);
 	}
 	return (0);
 }

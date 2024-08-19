@@ -60,7 +60,6 @@ typedef struct s_redir
 {
 	t_redir_type	redir_type;
 	char			*filename;
-	char			*limiter;
 	struct s_redir	*previous;
 	struct s_redir	*next;
 }	t_redir;
@@ -106,5 +105,8 @@ typedef struct s_pipe
 }	t_pipe;
 
 void	shell_signals(void);
+
+void	expand_cmd(t_param	*param);
+void	*clean_ast(t_ast *ast);
 
 #endif
