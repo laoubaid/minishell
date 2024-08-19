@@ -24,10 +24,10 @@ void	print_tokens(t_token *tokens)
 			printf(" LESS  | ");
 		else if (tokens->type == DLESS)
 			printf(" DLESS | ");
-		else if (tokens->type == DQUOTE)
-			printf("DQUOTE | ");
-		else if (tokens->type == SQUOTE)
-			printf("SQUOTE | ");
+		// else if (tokens->type == DQUOTE)
+		// 	printf("DQUOTE | ");
+		// else if (tokens->type == SQUOTE)
+		// 	printf("SQUOTE | ");
 		else if (tokens->type == RPAREN)
 			printf("RPAREN | ");
 		else if (tokens->type == LPAREN)
@@ -57,19 +57,11 @@ void	print_cmd(t_cmd *cmd)
 	printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
 	if ((cmd->simple_cmd)[0])
 	{
-		if ((cmd->simple_cmd)[0])
-			printf("cmd name: %s\n", (cmd->simple_cmd)[0]);
-		else
-			printf("cmd name: NULL\n");
-		printf("- - - - - - - - - - - - - - - - -params - - - - - - - - - - - - - - - -\n");
-		if ((cmd->simple_cmd)[0])
+		int i = 1;
+		while ((cmd->simple_cmd)[i])
 		{
-			int i = 1;
-			while ((cmd->simple_cmd)[i])
-			{
-				printf("%s -> ", (cmd->simple_cmd)[i]);
-				i++;
-			}
+			printf("%s -> ", (cmd->simple_cmd)[i]);
+			i++;
 		}
 	}
 	printf("NULL\n");
