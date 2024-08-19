@@ -6,21 +6,22 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 00:02:33 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/14 12:51:29 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:31:21 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-void	quit_shell(int signal)
+void	new_prompt(int signal)
 {
-	rl_clear_history();
-	exit(EXIT_SUCCESS);
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void	shell_signals(void)
 {
-	// signal(SIGINT, quit_shell);
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, new_prompt);
 	signal(SIGQUIT, SIG_IGN);
 }

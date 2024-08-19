@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/17 17:13:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:20:25 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,10 @@ int	main(int argc, char **argv, char **env)
 	shell_signals();
 	while (1)
 	{
-		if (syntax_error)
-			buffer = readline("\e[31m➜  \e[36mMiniShell\e[0m ");
-		else
-			buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
+		buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		syntax_error = parser(buffer, &(param->ast));
 		if (syntax_error)
 			continue;
-		if (param->ast)
-		{
-			// print_ast(param->ast);
-			// printf("after expansion: \n");
-			expand_cmd(param);
-			// print_ast(param->ast);
-		}
 		param->head = param->ast;
 		param->exit_status = execute(param);
 		printf("----------------------------------------------------------------------\nexit code: %d\n", param->exit_status);

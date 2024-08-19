@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/17 12:33:20 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:36:36 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ typedef enum e_type
 	DGREAT,
 	LESS,
 	DLESS,
-	DQUOTE,
-	SQUOTE,
 	RPAREN,
 	LPAREN
 }	t_type;
@@ -107,7 +105,6 @@ typedef struct s_pipe
 	struct s_pipe	*next;
 }	t_pipe;
 
-char	*get_raw_input(void);
 void	shell_signals(void);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   grammar.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 18:52:40 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:42:27 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,5 @@ int	grammar(t_token *token)
 		ft_putstr_fd("\e[31mSyntax error\e[0m\n", 2);
 		return (1);
 	}
-	// printf("\e[32mgrammar is all good\e[0m\n\n");
 	return (0);
 }
