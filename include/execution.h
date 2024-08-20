@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 15:53:58 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 01:07:04 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ t_pipe	*pipeline(t_ast *ast, t_param *param);
 t_param	*param_init(char **env);
 
 char	*strjoin_optclean(char *s1, char *s2, int flag);
+void	set_last_arg(t_param *param, char *str, char **arr);
 
 /* functions related to environement */
 int		env_edit(t_param *param, char *find, char *value, int flag);

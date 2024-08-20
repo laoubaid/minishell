@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 11:01:39 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:20:22 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,23 @@ char	*strjoin_optclean(char *s1, char *s2, int flag)
 	if (flag == 2 || flag == 3)
 		free(s1);
 	return (join[i] = 0, join);
+}
+
+void	set_last_arg(t_param *param, char *str, char **arr)
+{
+	int	i;
+
+	i = 0;
+	if (str)
+	{
+		env_edit(param, "_", str, 1);
+		return ;
+	}
+	if (arr && arr[0])
+	{
+		i = 1;
+		while (arr[i])
+			i++;
+		env_edit(param, "_", arr[i - 1], 1);
+	}
 }

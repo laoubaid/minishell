@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/19 19:36:36 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/20 01:07:15 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <readline/history.h>
 // # include "parser.h"
 # include <unistd.h>
+# include <limits.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
@@ -106,7 +107,9 @@ typedef struct s_pipe
 
 void	shell_signals(void);
 
-void	expand_cmd(t_param	*param);
+int		expand_cmd(t_param	*param);
+
+void	clean_param(t_param *param);
 void	*clean_ast(t_ast *ast);
 
 #endif

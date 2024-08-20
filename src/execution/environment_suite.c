@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 12:03:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 22:54:59 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:56:38 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	env_edit(t_param *param, char *find, char *value, int flag)
 	tmp = param->env;
 	while (tmp)
 	{
-		if (!ft_strncmp(find, tmp->name, ft_strlen(find)))
+		if (!ft_strncmp(find, tmp->name, ft_strlen(find) + 1))
 		{
 			free(tmp->name);
 			tmp->name = strjoin_optclean(find, "=", 0);

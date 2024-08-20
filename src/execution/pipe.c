@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 23:02:51 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:36:15 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	**allocate_for_pipe(t_pipe *pip, int *n)
 
 void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 {
-	int	exit_status;
+	int		exit_status;
 
 	if (fdin)
 	{

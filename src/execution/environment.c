@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 17:42:18 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:49:25 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	**env_default(void)
 
 	env = malloc(sizeof(char *) * 5);
 	env[0] = strjoin_optclean("PWD=", getcwd(NULL, 0), 2);
-	env[1] = ft_strdup("SHLVL=2");
+	env[1] = ft_strdup("SHLVL=0");
 	env[2] = ft_strdup("_=./minishell");
 	env[3] = ft_strdup("OLDPWD");
 	env[4] = NULL;
@@ -96,10 +96,15 @@ t_param	*param_init(char **env)
 	t_param	*param;
 
 	param = malloc(sizeof(t_param));
+	if (!param)
+		return (ft_putstr_fd("error: malloc failed!", 2), NULL);
 	if (!*env)
 		param->env_arr = env_default();
 	else
 		param->env_arr = env_dup(env);
 	param->env = env_init(param->env_arr);
+	param->ast = NULL;
+	param->head = NULL;
+	param->exit_status = 0;
 	return (param);
 }

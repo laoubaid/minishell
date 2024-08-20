@@ -4,7 +4,7 @@ COMPILER = cc
 
 # FLAGS = -Wall -Wextra -Werror
 FLAGS = -g3
-# FLAGS = -fsanitize=address -g3
+FLAGS = -fsanitize=address -g3
 
 SRCS = 	src/minishell.c src/parsing/parser.c src/parsing/tokenizer.c src/parsing/expander.c src/parsing/signals.c \
 		src/parsing/ast.c src/parsing/grammar.c src/parsing/expand_no_quote.c src/parsing/expand_str.c src/parsing/utils.c \

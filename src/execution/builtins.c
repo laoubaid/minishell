@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 10:33:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/19 17:01:24 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 01:31:39 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,25 +32,22 @@ int	ft_echo(char **cmd, t_param *param)
 	while (cmd[i])
 	{
 		write(1, cmd[i], ft_strlen(cmd[i]));
-		env_edit(param, "_", cmd[i], 1);
 		if (cmd[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
-	if (!flag)
-		write(1, "\n", 1);
-	
-	return (0);
+	return ((flag || write(1, "\n", 1)), 0); //check this out
 }
 
 void	clean_exit(char *value, char *msg, int exit_status, t_param *param)
 {
+	write(2, "exit\n", 5);
 	if (msg && value)
 	{
 		write(2, value, ft_strlen(value));
 		write(2, msg, ft_strlen(msg));
 	}
-	//clean param here
+	clean_param(param);
 	exit(exit_status);
 }
 
@@ -61,15 +58,18 @@ int	ft_exit(char **cmd, t_param *param)
 	i = 0;
 	if (cmd[1])
 	{
-		if (ft_strlen(cmd[1]) > 19)
-			clean_exit(cmd[1], ": numeric argument required\n", 2, param);
-		if (cmd[1][1] == '-' && cmd[1][1] == '+')
+		while (cmd[1][i] == ' ')
 			i++;
+		if (cmd[1][i] == '-' || cmd[1][i] == '+')
+			i++;
+		while (cmd[1][i] == '0')
+			i++;
+		if (ft_strlen(cmd[1] + i) > 19)
+			clean_exit(cmd[1], ": numeric argument required\n", 2, param);
 		while (cmd[1][i])
 		{
-			if (!ft_isdigit(cmd[1][i]))
-				clean_exit(NULL, ": numeric argument required\n", 2, param);
-			i++;
+			if (++i && !ft_isdigit(cmd[1][i - 1]))
+				clean_exit(cmd[1], ": numeric argument required\n", 2, param);
 		}
 		if (!cmd[2])
 			clean_exit(NULL, NULL, ft_atoi(cmd[1]), param);
@@ -92,7 +92,6 @@ int ft_env(t_param *param)
 		write(1, "\n", 1);
 		tmp++;
 	}
-	env_edit(param, "_", "env", 1);
 	return (0);
 }
 
@@ -118,8 +117,8 @@ int ft_export(t_param *param , char **cmd)
 		tmp->value = env_fetch(tmp->name, tmp);
 		i++;
 	}
-	param->env_arr = recreate_env(param->env, NULL);
-	env_edit(param, "_", "export", 1);
+	ft_free(param->env_arr);
+	param->env_arr = recreate_env(param->env, NULL); //why NULL?
 	return (0);
 }
 

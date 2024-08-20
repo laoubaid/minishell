@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:21:25 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/18 16:00:26 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:26:11 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int	ft_pwd(t_param *param)
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	free(pwd);
-	env_edit(param, "_", "pwd", 1);
 	return (0);
 }
 
@@ -58,8 +57,7 @@ int	ft_cd(t_param *param, t_cmd	*cmd)
 		if (chdir(cmd->simple_cmd[1]) == 0)
 		{
 			env_edit(param, "OLDPWD", get_env(param, "PWD"), 3);
-			env_edit(param, "PWD", getcwd(NULL, 0), 3);
-			return (0);
+			return (env_edit(param, "PWD", getcwd(NULL, 0), 3), 0);
 		}
 	}
 	else
@@ -69,8 +67,7 @@ int	ft_cd(t_param *param, t_cmd	*cmd)
 		if (!chdir((param->env_arr)[getpath(param->env_arr, "HOME=")] + 5))
 		{
 			env_edit(param, "OLDPWD", get_env(param, "PWD"), 3);
-			env_edit(param, "PWD", getcwd(NULL, 0), 3);
-			return (0);
+			return (env_edit(param, "PWD", getcwd(NULL, 0), 3), 0);
 		}
 	}
 	return (perror(cmd->simple_cmd[1]), 1);
@@ -82,6 +79,7 @@ void	ft_unset_suite(t_param *param, t_env *env, t_env *tmp)
 		tmp->next = env->next;
 	else
 		param->env = env->next;
+	ft_free(param->env_arr);
 	param->env_arr = recreate_env(param->env, NULL);
 	free(env->name);
 	free(env);
@@ -112,6 +110,5 @@ int	ft_unset(t_param *param, char **cmd)
 		}
 		i++;
 	}
-	env_edit(param, "_", "unset", 1);
 	return (0);
 }

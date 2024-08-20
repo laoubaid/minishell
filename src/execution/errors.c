@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 16:02:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/11 02:02:33 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:59:24 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ int	check_if_path(char *cmd)
 	int	i;
 
 	i = 0;
+	if (!cmd)
+		return (1);
+	if (!cmd[0])
+		return (1);
 	while (cmd[i])
 	{
 		if (cmd[i] == '/')
@@ -58,7 +62,7 @@ int	execution_errors(char *cmd)
 {
 	struct stat	filetype;
 
-	if (!check_if_path(cmd))
+	if (!check_if_path(cmd) || !cmd[0])
 		return (0);
 	if (stat(cmd, &filetype) == 0)
 	{

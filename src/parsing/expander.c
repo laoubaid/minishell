@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/19 21:44:23 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/19 23:08:41 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,14 @@ int	expand_redir(t_param *param)
 	return (0);
 }
 
-void	expand_cmd(t_param	*param)
+int	expand_cmd(t_param	*param)
 {
+	char	**cmd;
+	int		flag;
+
+	flag = 0;
 	if (!param || !param->ast || !param->ast->cmd)
-		return ;
+		return (1);
 	if (expand_args(param))
 	{
 		clean_ast(param->head);
@@ -82,4 +86,5 @@ void	expand_cmd(t_param	*param)
 		clean_ast(param->head);
 		exit(EXIT_FAILURE);
 	}
+	return (0);
 }
