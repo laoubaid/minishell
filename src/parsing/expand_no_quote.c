@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:14:45 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/19 19:30:46 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/22 15:37:13 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,45 +61,47 @@ char	*noquote_split(char ***expdd_arr, char *current, char *whitespaced)
 	return (current);
 }
 
-char	*get_nq_str(char **str, t_param *param, char *current, int *len)
+int	get_nq_str(char **str, char **noquote_str, t_param *param, int *len)
 {
-	char	*noquote_str;
-
-	noquote_str = NULL;
+	*noquote_str = NULL;
 	while ((*str)[*len] && (*str)[*len] != '"' && (*str)[*len] != '\'')
 	{
 		if ((*str)[*len] == '$')
 		{
-			noquote_str = join_str(noquote_str, ft_substr(*str, 0, *len));
-			if (!noquote_str)
-				return (NULL);
+			if (*len)
+				*noquote_str = join_str(*noquote_str, ft_substr(*str, 0, *len));
+			if (*len && !(*noquote_str))
+				return (1);
 			*str += *len +1;
-			noquote_str = join_str(noquote_str, expand_key(str, param, 0));
-			if (!noquote_str)
-				return (NULL);
+			if (join_expanded_key(str, noquote_str, param, 0))
+				return (1);
 			*len = 0;
 		}
 		else
 			(*len)++;
 	}
-	noquote_str = join_str(noquote_str, ft_substr(*str, 0, *len));
-	return (noquote_str);
+	if (*len)
+		*noquote_str = join_str(*noquote_str, ft_substr(*str, 0, *len));
+	if (*len && !(*noquote_str))
+		return (1);
+	return (0);
 }
 
-char	*expand_noquote(char **str, t_param *param, char *current, char ***arr)
+int	expand_noquote(char **str, t_param *param, char **current, char ***arr)
 {
 	char	*noquote_str;
 	int		len;
 
 	len = 0;
-	noquote_str = get_nq_str(str, param, current, &len);
-	if (!noquote_str)
+	if (get_nq_str(str, &noquote_str, param, &len))
 	{
-		free(current);
-		return (free_array(*arr));
+		free(*current);
+		free_array(*arr);
+		return (1);
 	}
-	current = noquote_split(arr, current, noquote_str);
+	if (noquote_str)
+		*current = noquote_split(arr, *current, noquote_str);
 	*str += len;
 	free(noquote_str);
-	return (current);
+	return (0);
 }
