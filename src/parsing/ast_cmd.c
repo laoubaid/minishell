@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 19:56:16 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 19:17:23 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:33:06 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_redir	*new_redir(t_token *token, t_redir *previous)
 		return (NULL);
 	redir->previous = previous;
 	redir->next = NULL;
-	redir->expand = 0;
+	redir->expand = 1;
 	if (token->type == GREAT)
 		redir->redir_type = R_STD_OUT;
 	else if (token->type == LESS)

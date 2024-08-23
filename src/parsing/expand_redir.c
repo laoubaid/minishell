@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 21:08:11 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 21:20:17 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:33:21 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	expand_heredoc_str(t_redir *current, char **old, char **new)
 	len = 0;
 	if (**old == '"' || **old == '\'')
 	{
-		current->expand = 1;
+		current->expand = 0;
 		quote = **old;
 		(*old)++;
 		while ((*old)[len] != quote)
