@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 20:09:43 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/22 15:50:48 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:25:58 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ char	**array_join(char **array1, char **array2);
 int		expand_noquote(char **str, t_param *param, char **current, char ***arr);
 int		join_expanded_key(char **str, char **current, t_param *param, int in);
 char	**expand_str(char *str, t_param *param);
+int		matched_names(char ***arr, char *str);
+int		free_array_int(char **arr);
 int		is_words(t_token *token);
 int		is_rediration(t_token *token);
 int		is_op(t_token *token);
