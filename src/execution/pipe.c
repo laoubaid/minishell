@@ -6,44 +6,50 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/21 22:17:06 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 20:23:00 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "execution.h"
 
-void	free_pipe(t_pipe *pip)
+void	pipe_init(t_param *param, t_ast *ast, t_pipe *pip)
 {
-	t_pipe	*tmp;
-
-	while (pip->next)
-	{
-		tmp = pip->next;
-		free(pip);
-		pip = tmp;
-	}
-	free(pip);
+	param->ast = ast;
+	expander(param);
+	pip->param = param;
+	pip->node = NULL;
+	if (ast->type == LPAREN)
+		pip->node = ast;
+	pip->cmd = ast->cmd;
+	pip->next = NULL;
 }
 
-int	**allocate_for_pipe(t_pipe *pip, int *n)
+int	**ft_pipe_allocatexfree(t_pipe *pip, int *n, int flag)
 {
-	int	i;
-	int	**fd;
+	int		i;
+	int		**fd;
+	t_pipe	*tmp;
 
 	i = 0;
-	*n = 0;
-	while (pip)
+	tmp = NULL;
+	if (flag)
 	{
-		(*n)++;
-		pip = pip->next;
+		while (pip->next)
+		{
+			tmp = pip->next;
+			free(pip);
+			pip = tmp;
+		}
+		free(pip);
+		return (NULL);
 	}
+	*n = 0;
+	while (pip && ++*(n))
+		pip = pip->next;
 	fd = malloc(sizeof(int *) * (*n));
 	while (i < *n)
-	{
-		fd[i] = malloc(2 * sizeof(int));
-		i++;
-	}
+		fd[i++] = malloc(2 * sizeof(int));
 	return (fd);
 }
 
@@ -73,17 +79,7 @@ void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 	exit_status = builtins(pip->param, pip->cmd);
 	if (exit_status != -1)
 		exit (exit_status);
-	if (!check_if_path(pip->cmd->simple_cmd[0]))
-		path(&(pip->cmd->simple_cmd), env[getpath(env, "PATH=")]);
-	redirecte(pip->cmd->redirs);
-	exit_status = execution_errors(pip->cmd->simple_cmd[0]);
-	if (exit_status)
-		exit(exit_status);
-	execve(pip->cmd->simple_cmd[0], pip->cmd->simple_cmd, env);
-	if (pip->cmd->simple_cmd[0])
-		write(2, pip->cmd->simple_cmd[0], ft_strlen(pip->cmd->simple_cmd[0]));
-	write(2, ": command not found\n", 20);
-	exit(127);
+	cmd_execve(pip->cmd->simple_cmd, env, pip->cmd->redirs);
 }
 
 int	closexwait(int **fd, int count, int pid)
@@ -110,24 +106,25 @@ int	closexwait(int **fd, int count, int pid)
 	}
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
-	return (-1);
+	if (WIFSIGNALED(exit_status))
+		return (130);
+	return (1);
 }
 
-int	handle_pipe(t_pipe *pip, char **env)
+int	handle_pipe(t_pipe *pip, char **env, int i)
 {
-	int	exit_status;
 	int	**fd;
 	int	count;
-	int	i;
 	int	pid;
 
-	i = 0;
-	exit_status = 0;
-	fd = allocate_for_pipe(pip, &count);
-	while (i < count)
+	fd = ft_pipe_allocatexfree(pip, &count, 0);
+	while (++i < count)
 	{
-		if (i != count - 1)
-			pipe(fd[i]);
+		if (i != count - 1 && pipe(fd[i]))
+		{
+			perror("pipe:");
+			break ;
+		}
 		pid = fork();
 		if (!pid)
 		{
@@ -138,11 +135,7 @@ int	handle_pipe(t_pipe *pip, char **env)
 			else
 				handle_cmd(pip, fd[i - 1], fd[i], env);
 		}
-		if (i != count - 1)
-			close(fd[i][1]);
-		i++;
 		pip = pip->next;
 	}
-	exit_status = closexwait(fd, count, pid);
-	return(exit_status);
+	return(closexwait(fd, count, pid));
 }

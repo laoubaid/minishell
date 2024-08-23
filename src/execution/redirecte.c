@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/22 23:00:03 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:41:17 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,11 @@ int	redirecte(t_redir *tmp)
 			output = open(tmp->filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
 		if (input == -1 || output == -1)
 			return (perror(""), 1);
+		if (input > 0)
+			dup2(input, STDIN_FILENO);
+		if (output > 0)
+			dup2(output, STDOUT_FILENO);
 		tmp = tmp->next;
 	}
-	if (input > 0)
-		dup2(input, STDIN_FILENO);
-	if (output > 0)
-		dup2(output, STDOUT_FILENO);
 	return (0);
 }

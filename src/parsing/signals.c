@@ -6,11 +6,22 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 00:02:33 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 00:08:14 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 20:09:57 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+void	cmd_signalhandler(char *cmd, char *prog)
+{
+	signal(SIGINT, new_line);
+	signal(SIGQUIT, quit_coredump);
+	if (!ft_strncmp(cmd, prog, (ft_strlen(cmd) + 1)))
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+	}	
+}
 
 void	quit_coredump(int signal)
 {

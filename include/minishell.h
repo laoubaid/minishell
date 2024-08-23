@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 13:26:25 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 20:09:05 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,18 +107,23 @@ typedef struct s_pipe
 	struct s_pipe	*next;
 }	t_pipe;
 
+/* signals related functions */
 void	shell_signals(void);
-
 void	new_prompt(int signal);
 void	new_line(int signal);
 void	quit_coredump(int signal);
+void	cmd_signalhandler(char *cmd, char *prog);
 
+/* main expande function */
 int		expander(t_param	*param);
 
-
+/* cleaning functions */
 void	clean_param(t_param *param);
 void	*clean_ast(t_ast *ast);
 
+/* heredoc related functions */
 int		heredoc_handler(t_param *param, int num);
+char	*ft_heredoc(char *limiter, int num);
+void	redir_heredoc(t_param *param, int num);
 
 #endif

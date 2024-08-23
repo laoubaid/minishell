@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 15:21:25 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/20 00:26:11 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:20:34 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,42 +73,43 @@ int	ft_cd(t_param *param, t_cmd	*cmd)
 	return (perror(cmd->simple_cmd[1]), 1);
 }
 
-void	ft_unset_suite(t_param *param, t_env *env, t_env *tmp)
+void	ft_unset_v2(t_param *param, t_env *freeit, t_env *prev)
 {
-	if (tmp)
-		tmp->next = env->next;
-	else
-		param->env = env->next;
-	ft_free(param->env_arr);
-	param->env_arr = recreate_env(param->env, NULL);
-	free(env->name);
-	free(env);
+	t_env	*tmp;
+
+	tmp = freeit->next;
+	if (freeit == param->env)
+		param->env = tmp;
+	free(freeit->name);
+	free(freeit);
+	if (prev)
+		prev->next = tmp;
 }
+
 
 int	ft_unset(t_param *param, char **cmd)
 {
 	int		i;
-	t_env	*env;
-	t_env	*tmp;
+	t_env	*itrtmp;
+	t_env	*prev;
 
-	i = 1;
-	while (cmd[i])
+	i = 0;
+	prev = NULL;
+	while (cmd[i++])
 	{
-		env = param->env;
-		if (!ft_strncmp(cmd[i], env->name, ft_strlen(env->name) + 1))
-			ft_unset_suite(param, env, NULL);
-		tmp = env;
-		while (env->next)
+		itrtmp = param->env;
+		while (itrtmp)
 		{
-			env = env->next;
-			if (!ft_strncmp(cmd[i], env->name, ft_strlen(env->name) + 1))
+			if (!ft_strncmp(cmd[i], itrtmp->name, ft_strlen(itrtmp->name) + 1))
 			{
-				ft_unset_suite(param, env, tmp);
-				break ;
+				ft_unset_v2(param, itrtmp, prev);
+                break ;
 			}
-			tmp = tmp->next;
+			prev = itrtmp;
+			itrtmp = itrtmp->next;
 		}
-		i++;
 	}
+	ft_free(param->env_arr);
+	param->env_arr = recreate_env(param->env, NULL);
 	return (0);
 }
