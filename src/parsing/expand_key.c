@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 15:49:08 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/22 19:18:16 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:33:04 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ char	*expand_key(char **str, t_param *param, int in)
 
 	len = 0;
 	while ((*str)[len] && !is_whitespace((*str)[len]) && (*str)[len] != '$'
-		&& (*str)[len] != '"' && (*str)[len] != '\'' && (*str)[len] != '.')
+		&& (*str)[len] != '"' && (*str)[len] != '\'' && (*str)[len] != '.'
+		&& (*str)[len - 1] != '?')
 		len++;
 	key = ft_substr(*str, 0, len);
 	if (!key)

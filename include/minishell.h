@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/22 22:56:04 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:26:25 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
+#include <dirent.h>
 
 // parsing enums
 typedef enum e_type
@@ -112,7 +113,8 @@ void	new_prompt(int signal);
 void	new_line(int signal);
 void	quit_coredump(int signal);
 
-int		expand_cmd(t_param	*param);
+int		expander(t_param	*param);
+
 
 void	clean_param(t_param *param);
 void	*clean_ast(t_ast *ast);

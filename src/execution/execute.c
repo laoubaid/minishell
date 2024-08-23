@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 00:12:02 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:28:24 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	{
 		pip = malloc(sizeof(t_pipe));
 		param->ast = ast->left;
-		expand_cmd(param);
+		expander(param);
 		pip->param = param;
 		pip->node = NULL;
 		if (ast->left->type == LPAREN)
@@ -123,7 +123,7 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	tmp->next = malloc(sizeof(t_pipe));
 	tmp = tmp->next;
 	param->ast = ast->right;
-	expand_cmd(param);
+	expander(param);
 	tmp->param = param;
 	tmp->node = NULL;
 	if (ast->right->type == LPAREN)
@@ -135,7 +135,7 @@ int openfiles(t_param *param)
 {
 	int	exit_status;
 
-	expand_cmd(param);
+	expander(param);
 	if (!fork())
 	{
 		exit_status = redirecte(param->ast->cmd->redirs);
@@ -166,7 +166,7 @@ int	execute(t_param *param)
 		param->exit_status = subshell(param);
 	else if (param->ast->cmd->simple_cmd[0])
 	{
-		error = expand_cmd(param);
+		error = expander(param);
 		if (!error)
 			param->exit_status = command_execution(param);
 	}
