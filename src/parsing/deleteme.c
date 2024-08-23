@@ -78,10 +78,13 @@ void	print_cmd(t_cmd *cmd)
 		else if (crnt_redir->redir_type == R_HEREDOC)
 			printf("R_HEREDOC");
 		if (crnt_redir->filename)
-			printf(" | filename: %s\n", crnt_redir->filename);
+			printf(" | filename: %s", crnt_redir->filename);
 		else
-			printf(" | filename: NULL\n");
-
+			printf(" | filename: NULL");
+		if (crnt_redir->expand)
+			printf(" | expand heredoc: TRUE\n");
+		else
+			printf(" | expand heredoc: FALSE\n");
 		crnt_redir = crnt_redir->next;
 	}
 	printf("-----------------------------------------------------------------------\n");

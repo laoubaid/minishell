@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 20:09:43 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 13:25:58 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:11:33 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char	**array_append(char **array, char *str);
 char	**array_join(char **array1, char **array2);
 int		expand_noquote(char **str, t_param *param, char **current, char ***arr);
 int		join_expanded_key(char **str, char **current, t_param *param, int in);
+int		expand_redir(t_param *param);
 char	**expand_str(char *str, t_param *param);
 int		matched_names(char ***arr, char *str);
 int		free_array_int(char **arr);
