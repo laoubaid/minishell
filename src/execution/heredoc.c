@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 01:55:28 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/22 21:09:25 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 23:54:24 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 char *get_next_line(void)
 {
-	char *str;
-	char *line;
+	char	*str;
+	char	*line;
 
 	str = NULL;
 	line = malloc(2);
@@ -27,6 +27,7 @@ char *get_next_line(void)
 		if (line[0] == '\n')
 			return (free(line), str);
 	}
+	write(1, "\n", 1);
 	return (free(line), str);
 }
 
@@ -47,12 +48,13 @@ char	*ft_getstr(char *limiter, int fd)
 		write(1, "> ", 2);
 		line = get_next_line();
 		if (!line)
+		{
+			write(1, "warning: here-doc delimited by end-of-file\n", 44);
 			break ;
+		}
 	}
-	free(limiter);
-	free(line);
 	write(fd, str, ft_strlen(str));
-	return (str);
+	return (free(limiter), free(line), str);
 }
 
 char	*ft_heredoc(char *limiter, int num)

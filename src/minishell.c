@@ -6,12 +6,14 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 22:26:23 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 23:31:13 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "execution.h"
+
+int ctrl_c = 0;
 
 void	clean_param(t_param *param)
 {
@@ -65,7 +67,10 @@ int	heredoc_fork(t_param *param)
 	}
 	wait(&exit_status);
 	if (WIFSIGNALED(exit_status))
+	{
+		param->exit_status = 130;
 		return (130);
+	}
 	return (0);
 }
 
@@ -84,7 +89,10 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		shell_signals();
+		ctrl_c = 0;
 		buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
+		if (ctrl_c)
+			param->exit_status = ctrl_c;
 		if (!buffer)
 			break ;
 		syntax_error = parser(buffer, &(param->ast));
@@ -93,11 +101,13 @@ int	main(int argc, char **argv, char **env)
 		param->head = param->ast;
 		if (param->ast)
 		{
-			print_ast(param->ast);
-			// if (!heredoc_fork(param))
-			// 	heredoc_fetch(param, 1);
-			// param->ast = param->head;
-			// param->exit_status = execute(param);
+			// print_ast(param->ast);
+			if (!heredoc_fork(param))
+			{
+				heredoc_fetch(param, 1);
+				param->ast = param->head;
+				param->exit_status = execute(param);
+			}
 		}
 		param->head = clean_ast(param->head);
 		param->ast = NULL;

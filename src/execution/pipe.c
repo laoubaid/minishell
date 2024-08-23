@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 20:23:00 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 23:19:37 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	closexwait(int **fd, int count, int pid)
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
 	if (WIFSIGNALED(exit_status))
-		return (130);
+		return (128 + WTERMSIG(exit_status));
 	return (1);
 }
 
@@ -120,11 +120,9 @@ int	handle_pipe(t_pipe *pip, char **env, int i)
 	fd = ft_pipe_allocatexfree(pip, &count, 0);
 	while (++i < count)
 	{
+		cmd_signalhandler(pip->cmd->simple_cmd[0], pip->param->prog);
 		if (i != count - 1 && pipe(fd[i]))
-		{
-			perror("pipe:");
-			break ;
-		}
+			return (perror("pipe:"), closexwait(fd, count, pid));
 		pid = fork();
 		if (!pid)
 		{
@@ -137,5 +135,5 @@ int	handle_pipe(t_pipe *pip, char **env, int i)
 		}
 		pip = pip->next;
 	}
-	return(closexwait(fd, count, pid));
+	return (closexwait(fd, count, pid));
 }

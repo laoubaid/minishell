@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 21:51:05 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 22:45:48 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ void	redir_heredoc(t_param *param, int num)
 	if (!param->ast->cmd)
 		return ;
 	tmp = param->ast->cmd->redirs;
+	expander(param);
 	while (tmp)
 	{
 		if (tmp->redir_type == R_HEREDOC)

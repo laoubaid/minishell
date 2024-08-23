@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 20:06:17 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 22:22:58 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 23:12:33 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,7 @@ int	command_execution(t_param *param)
 		return (exit_status);
 	cmd_signalhandler(cmd[0], param->prog);
 	if (!fork())
-	{
 		cmd_execve(cmd, param->env_arr, param->ast->cmd->redirs);
-	}
 	wait(&exit_status);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));

@@ -6,11 +6,13 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 00:02:33 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 22:24:16 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 23:26:58 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+extern int ctrl_c;
 
 void	cmd_signalhandler(char *cmd, char *prog)
 {
@@ -20,7 +22,7 @@ void	cmd_signalhandler(char *cmd, char *prog)
 	{
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-	}	
+	}
 }
 
 void	quit_coredump(int signal)
@@ -39,6 +41,7 @@ void	new_prompt(int signal)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	ctrl_c = 130;
 }
 
 void    shell_signals(void)
