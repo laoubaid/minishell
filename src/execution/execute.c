@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:07:43 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/20 00:26:23 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 00:12:02 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,21 @@ int	command_execution(t_param *param)
 	int		exit_status;
 
 	cmd = param->ast->cmd->simple_cmd;
-	set_last_arg(param, NULL, cmd);
-	heredoc(param);
+	set_last_arg(param, NULL, cmd);   //potontioal error
 	exit_status = builtins(param, param->ast->cmd);
 	if (exit_status != -1)
 		return (exit_status);
 	if (!check_if_path(cmd[0]) && getpath(param->env_arr, "PATH=") != -1)
 		path(&cmd, (param->env_arr)[getpath(param->env_arr, "PATH=")]);
+	signal(SIGINT, new_line);
+	signal(SIGQUIT, quit_coredump);
+	if (!ft_strncmp(cmd[0], param->prog, (ft_strlen(cmd[0]) + 1)))
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+	}
 	if (!fork())
 	{
-		signal(SIGINT, SIG_DFL);
 		redirecte(param->ast->cmd->redirs);
 		exit_status = execution_errors(cmd[0]);
 		if (exit_status)
@@ -56,22 +61,18 @@ int	handle_operations(t_param *param)
 	if (param->ast->type == OR)
 	{
 		param->ast = param->ast->left;
-		// expand_cmd(param);
 		if (execute(param) != 0)
 		{
 			param->ast = tmp;
-			// expand_cmd(param);
 			param->exit_status = execute(param);
 		}
 	}
 	else
 	{
 		param->ast = param->ast->left;
-		// expand_cmd(param);
 		if (execute(param) == 0)
 		{
 			param->ast = tmp;
-			// expand_cmd(param);
 			param->exit_status = execute(param);
 		}
 	}
@@ -135,10 +136,12 @@ int openfiles(t_param *param)
 	int	exit_status;
 
 	expand_cmd(param);
-	// there is a leak after this one
-	heredoc(param);
 	if (!fork())
-		exit(redirecte(param->ast->cmd->redirs));
+	{
+		exit_status = redirecte(param->ast->cmd->redirs);
+		clean_param(param);
+		exit(exit_status);
+	}
 	wait(&exit_status);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
@@ -156,7 +159,6 @@ int	execute(t_param *param)
 	else if (param->ast->type == PIPE)
 	{
 		pip = pipeline(param->ast, param);
-		pipe_heredoc(pip);
 		param->exit_status = handle_pipe(pip, param->env_arr);
 		free_pipe(pip);
 	}

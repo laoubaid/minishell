@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 20:09:43 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/19 22:54:38 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:15:43 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	*append_token(t_token *last, t_type type, char *content);
 char	*join_str(char *str1, char *str2);
 char	**array_append(char **array, char *str);
 char	**array_join(char **array1, char **array2);
-char	*expand_noquote(char **str, t_param *param, char *current, char ***expdd_arr);
-char	*expand_key(char **str, t_param *param, int in);
+int		expand_noquote(char **str, t_param *param, char **current, char ***arr);
+int		join_expanded_key(char **str, char **current, t_param *param, int in);
 char	**expand_str(char *str, t_param *param);
 int		is_words(t_token *token);
 int		is_rediration(t_token *token);

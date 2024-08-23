@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/20 00:36:15 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/21 22:17:06 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,12 @@ void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env)
 		close(fdout[1]);
 	}
 	if (pip->node)
-		exit (subshell(pip->param));
+	{
+		pip->param->ast = pip->node;
+		exit(subshell(pip->param));
+	}
+	if (!pip->cmd->simple_cmd[0])
+		exit(openfiles(pip->param));
 	exit_status = builtins(pip->param, pip->cmd);
 	if (exit_status != -1)
 		exit (exit_status);

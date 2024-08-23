@@ -6,54 +6,61 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/19 17:01:53 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 23:00:03 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "execution.h"
 
-void	heredoc(t_param *param)
+int	heredoc_handler(t_param *param, int num)
+{
+	t_ast	*save;
+	t_ast	*tmp;
+
+	if (!param->ast)
+		return (num);
+	save = param->ast;
+	tmp = param->ast->right;
+	if (param->ast->cmd && param->ast->type != LPAREN)
+		redir_heredoc(param, num);
+	if (param->ast->left)
+	{
+		param->ast = param->ast->left;
+		num = heredoc_handler(param, num);
+	}
+	if (tmp)
+	{
+		param->ast = tmp;
+		num = heredoc_handler(param, num);
+	}
+	tmp = param->ast;
+	param->ast = save;
+	if (param->ast->type == LPAREN)
+		redir_heredoc(param, num);
+	param->ast = tmp;
+	return (num + 1);
+}
+
+void	redir_heredoc(t_param *param, int num)
 {
 	t_redir *tmp;
 	int		i;
 
 	i = 1;
+	if (!param->ast->cmd)
+		return ;
 	tmp = param->ast->cmd->redirs;
 	while (tmp)
 	{
+		// printf("-\t<%d>\t-\t<%s>\n", tmp->redir_type, tmp->filename);
 		if (tmp->redir_type == R_HEREDOC)
 		{
-			tmp->filename = ft_heredoc(tmp->filename, i);
+			tmp->filename = ft_heredoc(tmp->filename, (num * 100 + i));
 			tmp->redir_type = R_STD_IN;
 			i++;
-		}
+		}	
 		tmp = tmp->next;
-	}
-}
-
-void	pipe_heredoc(t_pipe *pip)
-{
-	t_pipe	*piptmp;
-	t_redir	*tmp;
-	int		i;
-
-	i = 1;
-	piptmp = pip;
-	while (piptmp)
-	{
-		tmp = piptmp->cmd->redirs;
-		while (tmp)
-		{
-			if (tmp->redir_type == R_HEREDOC)
-			{
-				tmp->filename = ft_heredoc(tmp->filename, i);
-				tmp->redir_type = R_STD_IN;
-				i++;
-			}
-			tmp = tmp->next;
-		}
-		piptmp = piptmp->next;
 	}
 }
 
@@ -66,6 +73,7 @@ int	redirecte(t_redir *tmp)
 	input = 0;
 	while (tmp)
 	{
+		// printf("-\t<%d>\t-\t<%s>\n", tmp->redir_type, tmp->filename);
 		if (tmp->filename == NULL)
 			return (ft_putstr_fd("ambiguous redirect\n", 2), 1);
 		if (tmp->redir_type == R_STD_IN)

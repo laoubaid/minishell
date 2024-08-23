@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/20 01:07:15 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:56:04 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ typedef enum e_type
 
 typedef	enum e_redir_type
 {
+	R_STD_IN,
 	R_STD_OUT,
 	R_APPEND,
-	R_STD_IN,
 	R_HEREDOC
 }	t_redir_type;
 
@@ -95,6 +95,7 @@ typedef struct s_param
 	t_ast	*ast;
 	int		exit_status;
 	t_ast	*head;
+	char	*prog;
 }   t_param;
 
 typedef struct s_pipe  
@@ -107,9 +108,15 @@ typedef struct s_pipe
 
 void	shell_signals(void);
 
+void	new_prompt(int signal);
+void	new_line(int signal);
+void	quit_coredump(int signal);
+
 int		expand_cmd(t_param	*param);
 
 void	clean_param(t_param *param);
 void	*clean_ast(t_ast *ast);
+
+int		heredoc_handler(t_param *param, int num);
 
 #endif

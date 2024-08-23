@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/20 01:03:08 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 00:10:21 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,18 @@ void	shell_level(t_param *param)
 	env_edit(param, "SHLVL", ft_itoa(lvl), 3);
 }
 
+void	heredoc_fork(t_param *param)
+{
+	signal(SIGINT, new_line);
+	if (!fork())
+	{
+		signal(SIGINT, SIG_DFL);
+		heredoc_handler(param, 1);
+		exit(0);
+	}
+	wait(NULL);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_param	*param;
@@ -61,10 +73,11 @@ int	main(int argc, char **argv, char **env)
 	param = param_init(env);
 	if (!param)
 		return (1);
+	param->prog = argv[0];
 	shell_level(param);
-	shell_signals();
 	while (1)
 	{
+		shell_signals();
 		buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
 		if (!buffer)
 			break ;
@@ -73,9 +86,14 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		param->head = param->ast;
 		if (param->ast)
+		{
+			// print_ast(param->ast);
+			heredoc_fork(param);
+			param->ast = param->head;
 			param->exit_status = execute(param);
+		}
 		param->head = clean_ast(param->head);
 		param->ast = NULL;
 	}
-	return (clean_param(param), 0);
+	return (clean_param(param), ft_putstr_fd("exit\n", 2), 1);
 }

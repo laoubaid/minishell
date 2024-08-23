@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 01:55:28 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/17 17:09:16 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:09:25 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*ft_getstr(char *limiter, int fd)
 	line = NULL;
 	str = NULL;
 	flag = 1;
-	limiter = strjoin_optclean(limiter, "\n", 0);
+	limiter = strjoin_optclean(limiter, "\n", 1);
 	while (ft_strncmp(line, limiter, ft_strlen(line)))
 	{
 		str = strjoin_optclean(str, line, 1);
@@ -57,7 +57,6 @@ char	*ft_getstr(char *limiter, int fd)
 
 char	*ft_heredoc(char *limiter, int num)
 {
-	// need to give a unique name for each file
 	char	*str;
 	int		fd;
 	char	*filename;
