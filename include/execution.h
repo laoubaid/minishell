@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 15:08:48 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/20 01:07:04 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:59:43 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int		redirecte(t_redir *redir);
 
 /* diffrent main programme functions */
 int	subshell(t_param *param);
+int openfiles(t_param *param);
 
 /* builtins functions */
 int		ft_pwd(t_param *param);
@@ -65,7 +66,6 @@ char	**recreate_env(t_env *env_list, char **env);
 
 
 char	*ft_heredoc(char *limiter, int num);
-void	pipe_heredoc(t_pipe *pip);
-void	heredoc(t_param *param);
+void	redir_heredoc(t_param *param, int num);
 
 #endif

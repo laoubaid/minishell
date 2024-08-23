@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 16:02:33 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/19 22:59:24 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/22 23:02:26 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int	execution_errors(char *cmd)
 {
 	struct stat	filetype;
 
+	if (!cmd)
+		return (0);
 	if (!check_if_path(cmd) || !cmd[0])
 		return (0);
 	if (stat(cmd, &filetype) == 0)
