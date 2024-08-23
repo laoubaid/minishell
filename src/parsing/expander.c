@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 13:23:51 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:09:02 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,34 +35,6 @@ int	expand_args(t_param *param)
 	}
 	free_array(param->ast->cmd->simple_cmd);
 	param->ast->cmd->simple_cmd = new_cmd_arr;
-	return (0);
-}
-
-int	expand_redir(t_param *param)
-{
-	t_redir	*current;
-	char	**expndd_arr;
-
-	current = param->ast->cmd->redirs;
-	while (current)
-	{
-		expndd_arr = expand_str(current->filename, param);
-		if (!expndd_arr)
-			return (1);
-		if (!expndd_arr[0] || expndd_arr[1])
-		{
-			free(current->filename);
-			free_array(expndd_arr);
-			current->filename = NULL;
-		}
-		else
-		{
-			free(current->filename);
-			current->filename = expndd_arr[0];
-			free(expndd_arr);
-		}
-		current = current->next;
-	}
 	return (0);
 }
 
@@ -98,7 +70,7 @@ int	expand_wild_redir(t_param *param)
 	current = param->ast->cmd->redirs;
 	while (current)
 	{
-		if (current->filename)
+		if (current->filename && current->redir_type != R_HEREDOC)
 		{
 			arr = array_append(NULL, NULL);
 			if (!arr || matched_names(&arr, current->filename))
