@@ -6,12 +6,63 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 16:41:17 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:51:05 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "execution.h"
+
+void	redir_heredoc_fetch(t_param *param, int num)
+{
+	t_redir *tmp;
+	int		i;
+
+	i = 1;
+	if (!param->ast->cmd)
+		return ;
+	tmp = param->ast->cmd->redirs;
+	while (tmp)
+	{
+		if (tmp->redir_type == R_HEREDOC)
+		{
+			free(tmp->filename);
+			tmp->filename = strjoin_optclean("/tmp/hdoc", ft_itoa(num * 100 + i), 2);
+			tmp->redir_type = R_STD_IN;
+			i++;
+		}
+		tmp = tmp->next;
+	}
+}
+
+int	heredoc_fetch(t_param *param, int num)
+{
+	t_ast	*save;
+	t_ast	*tmp;
+
+	if (!param->ast)
+		return (num);
+	save = param->ast;
+	tmp = param->ast->right;
+	if (param->ast->cmd && param->ast->type != LPAREN)
+		redir_heredoc_fetch(param, num);
+	if (param->ast->left)
+	{
+		param->ast = param->ast->left;
+		num = heredoc_fetch(param, num);
+	}
+	if (tmp)
+	{
+		param->ast = tmp;
+		num = heredoc_fetch(param, num);
+	}
+	tmp = param->ast;
+	param->ast = save;
+	if (param->ast->type == LPAREN)
+		redir_heredoc_fetch(param, num);
+	param->ast = tmp;
+	return (num + 1);
+}
 
 int	heredoc_handler(t_param *param, int num)
 {
@@ -53,13 +104,12 @@ void	redir_heredoc(t_param *param, int num)
 	tmp = param->ast->cmd->redirs;
 	while (tmp)
 	{
-		// printf("-\t<%d>\t-\t<%s>\n", tmp->redir_type, tmp->filename);
 		if (tmp->redir_type == R_HEREDOC)
 		{
 			tmp->filename = ft_heredoc(tmp->filename, (num * 100 + i));
 			tmp->redir_type = R_STD_IN;
 			i++;
-		}	
+		}
 		tmp = tmp->next;
 	}
 }
@@ -73,7 +123,6 @@ int	redirecte(t_redir *tmp)
 	input = 0;
 	while (tmp)
 	{
-		// printf("-\t<%d>\t-\t<%s>\n", tmp->redir_type, tmp->filename);
 		if (tmp->filename == NULL)
 			return (ft_putstr_fd("ambiguous redirect\n", 2), 1);
 		if (tmp->redir_type == R_STD_IN)

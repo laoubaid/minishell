@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 20:06:17 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 20:09:50 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 22:22:58 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ int	command_execution(t_param *param)
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
 	if (WIFSIGNALED(exit_status))
-		return (130);
+		return (128 + WTERMSIG(exit_status));
 	return (1);
 }

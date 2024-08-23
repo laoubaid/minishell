@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 00:10:21 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/23 22:26:23 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,11 @@ void	shell_level(t_param *param)
 	env_edit(param, "SHLVL", ft_itoa(lvl), 3);
 }
 
-void	heredoc_fork(t_param *param)
+int	heredoc_fork(t_param *param)
 {
+	int	exit_status;
+
+	exit_status = 0;
 	signal(SIGINT, new_line);
 	if (!fork())
 	{
@@ -60,7 +63,10 @@ void	heredoc_fork(t_param *param)
 		heredoc_handler(param, 1);
 		exit(0);
 	}
-	wait(NULL);
+	wait(&exit_status);
+	if (WIFSIGNALED(exit_status))
+		return (130);
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -87,10 +93,11 @@ int	main(int argc, char **argv, char **env)
 		param->head = param->ast;
 		if (param->ast)
 		{
-			// print_ast(param->ast);
-			heredoc_fork(param);
-			param->ast = param->head;
-			param->exit_status = execute(param);
+			print_ast(param->ast);
+			// if (!heredoc_fork(param))
+			// 	heredoc_fetch(param, 1);
+			// param->ast = param->head;
+			// param->exit_status = execute(param);
 		}
 		param->head = clean_ast(param->head);
 		param->ast = NULL;
