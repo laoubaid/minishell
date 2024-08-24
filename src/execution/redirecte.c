@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 14:53:30 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 22:45:48 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:28:53 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	redir_heredoc(t_param *param, int num)
 	{
 		if (tmp->redir_type == R_HEREDOC)
 		{
-			tmp->filename = ft_heredoc(tmp->filename, (num * 100 + i));
+			tmp->filename = ft_heredoc(param, tmp->filename, (num * 100 + i), tmp->expand);
 			tmp->redir_type = R_STD_IN;
 			i++;
 		}

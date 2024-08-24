@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 01:28:54 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/08/23 23:19:37 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:45:03 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ int	handle_pipe(t_pipe *pip, char **env, int i)
 			else
 				handle_cmd(pip, fd[i - 1], fd[i], env);
 		}
+		if (i != count - 1)
+			close(fd[i][1]);
 		pip = pip->next;
 	}
 	return (closexwait(fd, count, pid));

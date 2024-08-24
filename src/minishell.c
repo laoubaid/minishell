@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 23:31:13 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:52:34 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	main(int argc, char **argv, char **env)
 	t_param	*param;
 	char	*buffer;
 	int		syntax_error;
+	int		exit_status;
 
 	syntax_error = 0;
 	param = param_init(env);
@@ -112,5 +113,6 @@ int	main(int argc, char **argv, char **env)
 		param->head = clean_ast(param->head);
 		param->ast = NULL;
 	}
-	return (clean_param(param), ft_putstr_fd("exit\n", 2), 1);
+	exit_status = param->exit_status;
+	return (clean_param(param), ft_putstr_fd("exit\n", 2), exit_status);
 }

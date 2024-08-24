@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:36 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 21:38:10 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:28:16 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	*clean_ast(t_ast *ast);
 /* heredoc related functions */
 int		heredoc_fetch(t_param *param, int num);
 int		heredoc_handler(t_param *param, int num);
-char	*ft_heredoc(char *limiter, int num);
+char	*ft_heredoc(t_param *param, char *limiter, int num, int flag);
 void	redir_heredoc(t_param *param, int num);
 
 #endif
