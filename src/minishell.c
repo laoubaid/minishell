@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:32:02 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/24 14:52:34 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/08/24 16:15:27 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	main(int argc, char **argv, char **env)
 		param->head = param->ast;
 		if (param->ast)
 		{
-			// print_ast(param->ast);
+			print_ast(param->ast);
 			if (!heredoc_fork(param))
 			{
 				heredoc_fetch(param, 1);
