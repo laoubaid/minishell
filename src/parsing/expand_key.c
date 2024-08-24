@@ -6,16 +6,19 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 15:49:08 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 13:33:04 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/24 15:47:44 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-char	*expand_key_ret(char *key, char *value)
+int	key_not_finished(char **str, int len)
 {
-	free(key);
-	return (value);
+	if ((*str)[len] && !is_whitespace((*str)[len]) && (*str)[len] != '$'
+		&& (*str)[len] != '"' && (*str)[len] != '\'' && (*str)[len] != '.'
+		&& (*str)[len - 1] != '?')
+		return (1);
+	return (0);
 }
 
 char	*expand_key(char **str, t_param *param, int in)
@@ -25,26 +28,26 @@ char	*expand_key(char **str, t_param *param, int in)
 	t_env	*env;
 
 	len = 0;
-	while ((*str)[len] && !is_whitespace((*str)[len]) && (*str)[len] != '$'
-		&& (*str)[len] != '"' && (*str)[len] != '\'' && (*str)[len] != '.'
-		&& (*str)[len - 1] != '?')
+	while (key_not_finished(str, len))
 		len++;
 	key = ft_substr(*str, 0, len);
 	if (!key)
 		return (NULL);
 	*str += len;
 	if ((!*key && in) || (!*key && !in && **str != '"' && **str != '\''))
-		return (expand_key_ret(key, ft_strdup("$")));
+		return (free(key), ft_strdup("$"));
 	if (!ft_strncmp(key, "?", 42))
-		return (expand_key_ret(key, ft_itoa(param->exit_status)));
+		return (free(key), ft_itoa(param->exit_status));
 	env = param->env;
 	while (env && *key)
 	{
-		if (!ft_strncmp(key, env->name, len +42))
-			return (expand_key_ret(key, ft_strdup(env->value)));
+		if (!ft_strncmp(key, env->name, len +42) && env->value)
+			return (free(key), ft_strdup(env->value));
+		if (!ft_strncmp(key, env->name, len +42) && !env->value)
+			return (free(key), ft_strdup(""));
 		env = env->next;
 	}
-	return (expand_key_ret(key, ft_strdup("")));
+	return (free(key), ft_strdup(""));
 }
 
 int	join_expanded_key(char **str, char **current, t_param *param, int in)
