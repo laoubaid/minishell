@@ -6,11 +6,36 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 20:34:24 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 21:09:02 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/24 19:35:35 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+int	clean_all_quotes(t_param *param)
+{
+	char	**cmd_arr;
+	t_redir	*redir;
+
+	cmd_arr = param->ast->cmd->simple_cmd;
+	redir = param->ast->cmd->redirs;
+	while (*cmd_arr)
+	{
+		if (expand_remove_quotes(cmd_arr))
+			return (1);
+		cmd_arr++;
+	}
+	while (redir)
+	{
+		if (redir->redir_type != R_HEREDOC && redir->filename)
+		{
+			if (expand_remove_quotes(&redir->filename))
+				return (1);
+		}
+		redir = redir->next;
+	}
+	return (0);
+}
 
 int	expand_args(t_param *param)
 {
@@ -99,7 +124,8 @@ int	expander(t_param *param)
 	if (!param || !param->ast || !param->ast->cmd)
 		return (1);
 	if (expand_args(param) || expand_redir(param)
-		|| expand_wild_args(param) || expand_wild_redir(param))
+		|| expand_wild_args(param) || expand_wild_redir(param)
+		|| clean_all_quotes(param))
 	{
 		clean_ast(param->head);
 		exit(EXIT_FAILURE);

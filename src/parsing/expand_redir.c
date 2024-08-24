@@ -6,7 +6,7 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 21:08:11 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 21:33:21 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/24 19:45:40 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	expand_redir_no_heredoc(t_param *param, t_redir *current)
 	return (0);
 }
 
-int	expand_heredoc_str(t_redir *current, char **old, char **new)
+int	remove_quote(int *hasquote, char **old, char **new)
 {
 	char	quote;
 	int		len;
@@ -42,7 +42,8 @@ int	expand_heredoc_str(t_redir *current, char **old, char **new)
 	len = 0;
 	if (**old == '"' || **old == '\'')
 	{
-		current->expand = 0;
+		if (hasquote)
+			*hasquote = 1;
 		quote = **old;
 		(*old)++;
 		while ((*old)[len] != quote)
@@ -66,16 +67,19 @@ int	expand_redir_heredoc(t_redir *current)
 {
 	char	*new_filename;
 	char	*filename;
-	char	quote;
+	int		hasquote;
 	int		len;
 
 	filename = current->filename;
 	len = 0;
 	new_filename = NULL;
+	hasquote = 0;
 	while (*filename)
 	{
-		if (expand_heredoc_str(current, &filename, &new_filename))
+		if (remove_quote(&hasquote, &filename, &new_filename))
 			return (1);
+		if (hasquote)
+			current->expand = 0;
 	}
 	free(current->filename);
 	current->filename = new_filename;

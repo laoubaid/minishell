@@ -6,17 +6,45 @@
 /*   By: kez-zoub <kez-zoub@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 20:41:30 by kez-zoub          #+#    #+#             */
-/*   Updated: 2024/08/23 13:34:43 by kez-zoub         ###   ########.fr       */
+/*   Updated: 2024/08/24 19:47:24 by kez-zoub         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
+int	q_matched(char **str, char **pattern)
+{
+	char	quote;
+
+	if (**pattern == '"' || **pattern == '\'')
+	{
+		quote = **pattern;
+		(*pattern)++;
+		while (**pattern != quote)
+		{
+			if (**str == **pattern)
+			{
+				(*str)++;
+				(*pattern)++;
+			}
+			else
+				return (0);
+		}
+		if (**pattern == quote)
+			(*pattern)++;
+		else
+			return (0);
+	}
+	return (1);
+}
+
 int	match(char *str, char *pattern)
 {
-	while (*str && *pattern)
+	while (*str || *pattern)
 	{
-		if (*pattern == '*')
+		if (!q_matched(&str, &pattern))
+			break ;
+		else if (*pattern == '*')
 		{
 			while (*pattern == '*')
 				pattern++;
@@ -25,7 +53,7 @@ int	match(char *str, char *pattern)
 		}
 		else
 		{
-			if (*str == *pattern)
+			if (*str == *pattern && *str && *pattern)
 			{
 				str++;
 				pattern++;
@@ -78,4 +106,5 @@ int	matched_names(char ***arr, char *str)
 		if (cpy_and_append(arr, str))
 			return (1);
 	closedir(dir);
+	return (0);
 }
