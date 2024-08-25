@@ -80,20 +80,35 @@ int	cpy_and_append(char ***arr, char *src)
 	return (0);
 }
 
+DIR	*open_directory(char ***arr, char *str, int *flag)
+{
+	DIR	*dir;
+
+	dir = opendir(".");
+	if (!dir)
+	{
+		if (cpy_and_append(arr, str))
+		{
+			*flag = 1;
+			return (NULL);
+		}
+		*flag = 0;
+		return (NULL);
+	}
+	return (dir);
+}
+
 int	matched_names(char ***arr, char *str)
 {
 	DIR				*dir;
 	struct dirent	*s_dir;
 	int				match_found;
+	int				flag;
 
-	dir = opendir(".");
 	match_found = 0;
+	dir = open_directory(arr, str, &flag);
 	if (!dir)
-	{
-		if (cpy_and_append(arr, str))
-			return (1);
-		return (0);
-	}
+		return (flag);
 	s_dir = readdir(dir);
 	while (s_dir)
 	{
@@ -109,6 +124,5 @@ int	matched_names(char ***arr, char *str)
 	if (!match_found)
 		if (cpy_and_append(arr, str))
 			return (1);
-	closedir(dir);
-	return (0);
+	return (closedir(dir), 0);
 }

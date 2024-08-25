@@ -14,7 +14,6 @@ SRCS = 	src/minishell.c src/parsing/parser.c src/parsing/tokenizer.c src/parsing
 		src/execution/executer.c src/execution/path.c src/execution/split.c src/execution/redirecte.c src/execution/errors.c \
 		src/execution/pipe.c src/execution/environment.c src/execution/builtins.c src/execution/builtins_suite.c src/execution/utils.c \
 		src/execution/environment_suite.c src/execution/environment_suite_2.c src/execution/heredoc.c src/execution/execution.c \
-		src/parsing/deleteme.c #to be deleted
 
 LIBFT = libft/libft.a
 

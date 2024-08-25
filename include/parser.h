@@ -46,8 +46,4 @@ void	*clean_cmd(t_cmd *cmd);
 void	*clean_ast(t_ast *ast);
 t_ast	*fill_branches(int	min_prec, t_token **token);
 
-//to be deleted
-void	print_tokens(t_token *tokens);
-void	print_cmd(t_cmd *cmd);
-
 #endif

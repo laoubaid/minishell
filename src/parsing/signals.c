@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-extern int ctrl_c;
+extern int g_ctrl_c;
 
 void	cmd_signalhandler(char *cmd, char *prog)
 {
@@ -44,7 +44,7 @@ void	new_prompt(int signal)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	ctrl_c = 130;
+	g_ctrl_c = 130;
 }
 
 void    shell_signals(void)

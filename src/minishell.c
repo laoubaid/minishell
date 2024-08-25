@@ -13,7 +13,7 @@
 #include "parser.h"
 #include "execution.h"
 
-int	ctrl_c = 0;
+int	g_ctrl_c = 0;
 
 void	clean_param(t_param *param)
 {
@@ -85,8 +85,8 @@ int	ft_minishell(t_param *param)
 	char	*buffer;
 
 	buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
-	if (ctrl_c)
-		param->exit_status = ctrl_c;
+	if (g_ctrl_c)
+		param->exit_status = g_ctrl_c;
 	if (!buffer)
 		return (1);
 	if (parser(buffer, &(param->ast)))
@@ -125,7 +125,7 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		shell_signals();
-		ctrl_c = 0;
+		g_ctrl_c = 0;
 		if (ft_minishell(param))
 			break ;
 	}
