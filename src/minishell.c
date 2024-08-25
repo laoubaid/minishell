@@ -30,7 +30,7 @@ void	clean_param(t_param *param)
 		free(list->name);
 		free(list);
 		list = tmp;
-	}c
+	}
 	free(param);
 }
 
