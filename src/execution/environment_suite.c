@@ -13,55 +13,23 @@
 #include "minishell.h"
 #include "execution.h"
 
-char	**recreate_env(t_env *env_list, char **env)
+char	*get_env(t_param *param, char *find)
 {
 	t_env	*tmp;
-	int		i;
+	char	*res;
 
-	i = 0;
-	tmp = env_list;
-	while (tmp)
-	{
-		if (tmp->print_flag)
-			i++;
-		tmp = tmp->next;
-	}
-	env = malloc(sizeof(char *) * (i + 1));
-	tmp = env_list;
-	i = 0;
-	while (tmp)
-	{
-		if (tmp->print_flag)
-		{
-			env[i] = strjoin_optclean("=", tmp->value, 0);
-			env[i] = strjoin_optclean(tmp->name, env[i], 2);
-			i++;
-		}
-		tmp = tmp->next;
-	}
-	return (env[i] = NULL, env);
-}
-
-int	env_edit(t_param *param, char *find, char *value, int flag)
-{
-	t_env	*tmp;
-
+	res = NULL;
 	tmp = param->env;
 	while (tmp)
 	{
 		if (!ft_strncmp(find, tmp->name, ft_strlen(find) + 1))
 		{
-			free(tmp->name);
-			tmp->name = strjoin_optclean(find, "=", 0);
-			tmp->name = strjoin_optclean(tmp->name, value, flag);
-			tmp->value = env_fetch(tmp->name, tmp);
-			ft_free(param->env_arr);
-			param->env_arr = recreate_env(param->env, NULL);
-			return (0);
+			res = ft_strdup(tmp->value);
+			break ;
 		}
 		tmp = tmp->next;
 	}
-	return (1);
+	return (res);
 }
 
 void	print_variables(t_param *param)
@@ -86,22 +54,27 @@ void	print_variables(t_param *param)
 	}
 }
 
-int checkifvalid(char *str, int *idx)
+int	checkifvalid(char *str, int *idx, t_param *param)
 {
 	char	*tmp;
 
 	tmp = str;
-		
 	if (!str)
 		return ((*idx)++, 0);
-	if (!*str || *str == '=' || ft_isdigit(*str))
+	if (!(ft_isalpha(*str) || *str == '_'))
+	{
+		param->exit_status = 1;
 		return (write(2, "not a valid identifier\n", 23), (*idx)++, 0);
+	}
 	while (*str && *str != '=')
 	{
 		if (*str == '+' && *(str + 1) == '=')
 			break ;
-		if (!ft_isalnum(*str))
+		if (!(ft_isalpha(*str) || *str == '_'))
+		{
+			param->exit_status = 1;
 			return (write(2, "not a valid identifier\n", 23), (*idx)++, 0);
+		}
 		str++;
 	}
 	return (1);
@@ -113,9 +86,9 @@ char	*checkifexist_suite(char *str, int i, t_env *tmp)
 
 	if (str[i] == '+')
 	{
-		tobefree = strjoin_optclean("=", tmp->value, 0);
-		tobefree = strjoin_optclean(tmp->name, tobefree, 3);
-		tobefree = strjoin_optclean(tobefree, str + (i + 2), 1);
+		tobefree = join_optclean("=", tmp->value, 0);
+		tobefree = join_optclean(tmp->name, tobefree, 3);
+		tobefree = join_optclean(tobefree, str + (i + 2), 1);
 	}
 	if (str[i] == '=')
 	{
@@ -125,7 +98,7 @@ char	*checkifexist_suite(char *str, int i, t_env *tmp)
 	return (tobefree);
 }
 
-int checkifexist(char *str, t_env *env, int *idx)
+int	checkifexist(char *str, t_env *env, int *idx)
 {
 	int		i;
 	t_env	*tmp;

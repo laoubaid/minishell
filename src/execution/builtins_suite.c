@@ -13,22 +13,30 @@
 #include "minishell.h"
 #include "execution.h"
 
-char	*get_env(t_param *param, char *find)
+int	ft_echo(char **cmd)
 {
-	t_env	*tmp;
-	char	*res;
+	int	flag;
+	int	i;
 
-	tmp = param->env;
-	while (tmp)
+	i = 1;
+	flag = 0;
+	if (cmd[1] && !ft_strncmp("-n", cmd[1], 2))
 	{
-		if (!ft_strncmp(find, tmp->name, ft_strlen(find) + 1))
-		{
-			res = ft_strdup(tmp->value);
-			break ;
-		}
-		tmp = tmp->next;
+		while (cmd[1][i] == 'n')
+			i++;
+		if (!(cmd[1][i]) && ++flag)
+			i = 2;
+		else
+			i = 1;
 	}
-	return (res);
+	while (cmd[i])
+	{
+		write(1, cmd[i], ft_strlen(cmd[i]));
+		if (cmd[i + 1])
+			write(1, " ", 1);
+		i++;
+	}
+	return ((flag || write(1, "\n", 1)), 0);
 }
 
 int	ft_pwd(t_param *param)
@@ -48,7 +56,7 @@ int	ft_pwd(t_param *param)
 
 int	ft_cd(t_param *param, t_cmd	*cmd)
 {
-	if (cmd->simple_cmd[1])
+	if (cmd->simple_cmd[1] && ft_strncmp(cmd->simple_cmd[1], "--", 3))
 	{
 		if (cmd->simple_cmd[2])
 			return (write(2, "cd: too many arguments\n", 23), 1);
@@ -86,7 +94,6 @@ void	ft_unset_v2(t_param *param, t_env *freeit, t_env *prev)
 		prev->next = tmp;
 }
 
-
 int	ft_unset(t_param *param, char **cmd)
 {
 	int		i;
@@ -103,7 +110,7 @@ int	ft_unset(t_param *param, char **cmd)
 			if (!ft_strncmp(cmd[i], itrtmp->name, ft_strlen(itrtmp->name) + 1))
 			{
 				ft_unset_v2(param, itrtmp, prev);
-                break ;
+				break ;
 			}
 			prev = itrtmp;
 			itrtmp = itrtmp->next;

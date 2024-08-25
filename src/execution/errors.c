@@ -77,7 +77,7 @@ int	execution_errors(char *cmd)
 	else
 	{
 		perror(cmd);
-		return (126);
+		return (127);
 	}
 	if (access(cmd, X_OK) != 0)
 	{

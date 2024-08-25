@@ -12,62 +12,82 @@
 
 #include "minishell.h"
 #include "execution.h"
+#include "parser.h"
 
-char *get_next_line(void)
+char	*heredoc_expand(char *str, t_param *param)
 {
-	char	*str;
-	char	*line;
+	int		len;
+	char	*exp;
 
-	str = NULL;
-	line = malloc(2);
-	line[1] = 0;
-	while (read(0, line, 1) > 0)
+	len = 0;
+	exp = NULL;
+	while (str[len])
 	{
-		str = strjoin_optclean(str, line, 1);
-		if (line[0] == '\n')
-			return (free(line), str);
+		if (str[len] == '$')
+		{
+			if (len)
+				exp = join_str(exp, ft_substr(str, 0, len));
+			str += len +1;
+			if ((len && !(exp))
+				|| join_expanded_key(&str, &exp, param, 0))
+				return (NULL);
+			len = 0;
+		}
+		else
+			len++;
 	}
-	write(1, "\n", 1);
-	return (free(line), str);
+	if (len)
+		exp = join_str(exp, ft_substr(str, 0, len));
+	return (exp);
 }
 
-char	*ft_getstr(char *limiter, int fd)
+char	*ft_getstr(char *limiter)
 {
 	char	*line;
 	char	*str;
-	int		flag;
 
 	line = NULL;
 	str = NULL;
-	flag = 1;
-	limiter = strjoin_optclean(limiter, "\n", 1);
-	while (ft_strncmp(line, limiter, ft_strlen(line)))
+	limiter = join_optclean(limiter, "\n", 1);
+	while (ft_strncmp(line, limiter, ft_strlen(line)) || (line && !line[0]))
 	{
-		str = strjoin_optclean(str, line, 1);
+		if (line)
+		{
+			line = join_optclean(line, "\n", 1);
+			str = join_optclean(str, line, 1);
+		}
 		free(line);
-		write(1, "> ", 2);
-		line = get_next_line();
+		line = readline("> ");
+		if (line && !line[0] && limiter[0] == '\n')
+			break ;
 		if (!line)
 		{
 			write(1, "warning: here-doc delimited by end-of-file\n", 44);
 			break ;
 		}
 	}
-	write(fd, str, ft_strlen(str));
 	return (free(limiter), free(line), str);
 }
 
-char	*ft_heredoc(char *limiter, int num)
+char	*ft_heredoc(t_param *param, char *limiter, int num, int exp)
 {
 	char	*str;
+	char	*tmp;
 	int		fd;
 	char	*filename;
 
-	filename = strjoin_optclean("/tmp/hdoc", ft_itoa(num), 2);
+	filename = join_optclean("/tmp/hdoc", ft_itoa(num), 2);
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd == -1)
 		return (NULL);
-	str = ft_getstr(limiter, fd);
+	str = ft_getstr(limiter);
+	tmp = str;
+	if (exp && str && str[0])
+	{
+		str = heredoc_expand(str, param);
+		free(tmp);
+	}
+	write(fd, str, ft_strlen(str));
 	free(str);
 	close(fd);
 	return (filename);

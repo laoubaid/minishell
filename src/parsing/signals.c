@@ -27,16 +27,19 @@ void	cmd_signalhandler(char *cmd, char *prog)
 
 void	quit_coredump(int signal)
 {
+	(void)signal;
 	ft_putstr_fd("Quit (core dumped)\n", 2);
 }
 
 void	new_line(int signal)
 {
+	(void)signal;
 	write(1, "\n", 1);
 }
 
 void	new_prompt(int signal)
 {
+	(void)signal;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);

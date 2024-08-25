@@ -41,7 +41,6 @@ int	expand_args(t_param *param)
 {
 	char	**new_cmd_arr;
 	char	**expanded;
-	char	*str;
 	int		i;
 
 	i = 0;
@@ -117,7 +116,6 @@ int	expand_wild_redir(t_param *param)
 
 int	expander(t_param *param)
 {
-	char	**cmd;
 	int		flag;
 
 	flag = 0;
@@ -128,7 +126,7 @@ int	expander(t_param *param)
 		|| clean_all_quotes(param))
 	{
 		clean_ast(param->head);
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);       // hada la yassih 3alijho
 	}
 	return (0);
 }

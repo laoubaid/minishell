@@ -22,8 +22,6 @@ int	expand_remove_quotes(char **quoted_str)
 {
 	char	*new_str;
 	char	*old_str;
-	char	quote;
-	int		len;
 
 	old_str = *quoted_str;
 	new_str = NULL;

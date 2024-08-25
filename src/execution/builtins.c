@@ -13,32 +13,6 @@
 #include "minishell.h"
 #include "execution.h"
 
-int	ft_echo(char **cmd, t_param *param)
-{
-	int	flag;
-	int	i;
-
-	i = 1;
-	flag = 0;
-	if (cmd[1] && !ft_strncmp("-n", cmd[1], 2))
-	{
-		while (cmd[1][i] == 'n')
-			i++;
-		if (!(cmd[1][i]) && ++flag)
-			i = 2;
-		else
-			i = 1;
-	}
-	while (cmd[i])
-	{
-		write(1, cmd[i], ft_strlen(cmd[i]));
-		if (cmd[i + 1])
-			write(1, " ", 1);
-		i++;
-	}
-	return ((flag || write(1, "\n", 1)), 0); //check this out
-}
-
 void	clean_exit(char *value, char *msg, int exit_status, t_param *param)
 {
 	write(2, "exit\n", 5);
@@ -74,18 +48,17 @@ int	ft_exit(char **cmd, t_param *param)
 		if (!cmd[2])
 			clean_exit(NULL, NULL, ft_atoi(cmd[1]), param);
 		else
-			return (write(2, "exit: too many arguments\n", 25), 1);
+			return (write(2, "exit\nexit: too many arguments\n", 30), 1);
 	}
 	clean_exit(NULL, NULL, 1, param);
 	return (1);
 }
 
-int ft_env(t_param *param)
+int	ft_env(t_param *param)
 {
 	char	**tmp;
 
 	tmp = param->env_arr;
-
 	while (*tmp)
 	{
 		write(1, *tmp, ft_strlen(*tmp));
@@ -95,7 +68,7 @@ int ft_env(t_param *param)
 	return (0);
 }
 
-int ft_export(t_param *param , char **cmd)
+int	ft_export(t_param *param, char **cmd)
 {
 	int		i;
 	t_env	*tmp;
@@ -108,7 +81,8 @@ int ft_export(t_param *param , char **cmd)
 		tmp = tmp->next;
 	while (cmd[i])
 	{
-		if (!checkifvalid(cmd[i], &i) || checkifexist(cmd[i], param->env, &i))
+		if (!checkifvalid(cmd[i], &i, param)
+			|| checkifexist(cmd[i], param->env, &i))
 			continue ;
 		tmp->next = malloc(sizeof(t_env));
 		tmp = tmp->next;
@@ -118,8 +92,8 @@ int ft_export(t_param *param , char **cmd)
 		i++;
 	}
 	ft_free(param->env_arr);
-	param->env_arr = recreate_env(param->env, NULL); //why NULL?
-	return (0);
+	param->env_arr = recreate_env(param->env, NULL);
+	return (param->exit_status);
 }
 
 int	builtins(t_param *param, t_cmd *cmd)
@@ -135,7 +109,7 @@ int	builtins(t_param *param, t_cmd *cmd)
 	if (!ft_strncmp(cmd->simple_cmd[0], "cd", 3))
 		exit_status = ft_cd(param, cmd);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "echo", 5))
-		exit_status = ft_echo(cmd->simple_cmd, param);
+		exit_status = ft_echo(cmd->simple_cmd);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "pwd", 4))
 		exit_status = ft_pwd(param);
 	else if (!ft_strncmp(cmd->simple_cmd[0], "export", 7))

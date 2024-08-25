@@ -13,7 +13,7 @@
 #include "parser.h"
 #include "execution.h"
 
-int ctrl_c = 0;
+int	ctrl_c = 0;
 
 void	clean_param(t_param *param)
 {
@@ -30,7 +30,7 @@ void	clean_param(t_param *param)
 		free(list->name);
 		free(list);
 		list = tmp;
-	} 
+	}c
 	free(param);
 }
 
@@ -47,8 +47,14 @@ void	shell_level(t_param *param)
 		{
 			lvl = ft_atoi(tmp->value);
 			lvl++;
+			break ;
 		}
 		tmp = tmp->next;
+	}
+	if (lvl > 999)
+	{
+		lvl = 1;
+		write(2, "warning: shell level too high, resetting to 1\n", 46);
 	}
 	env_edit(param, "SHLVL", ft_itoa(lvl), 3);
 }
@@ -74,13 +80,43 @@ int	heredoc_fork(t_param *param)
 	return (0);
 }
 
+int	ft_minishell(t_param *param)
+{
+	char	*buffer;
+
+	buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
+	if (ctrl_c)
+		param->exit_status = ctrl_c;
+	if (!buffer)
+		return (1);
+	if (parser(buffer, &(param->ast)))
+	{
+		param->exit_status = 2;
+		return (0);
+	}
+	param->head = param->ast;
+	if (param->ast)
+	{
+		if (!heredoc_fork(param))
+		{
+			heredoc_fetch(param, 1);
+			param->ast = param->head;
+			param->exit_status = execute(param);
+		}
+	}
+	param->head = clean_ast(param->head);
+	param->ast = NULL;
+	return (0);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_param	*param;
-	char	*buffer;
-	int		syntax_error;
+	int		helper;
+	int		exit_status;
 
-	syntax_error = 0;
+	(void)argc;
+	helper = 0;
 	param = param_init(env);
 	if (!param)
 		return (1);
@@ -90,27 +126,11 @@ int	main(int argc, char **argv, char **env)
 	{
 		shell_signals();
 		ctrl_c = 0;
-		buffer = readline("\e[32m➜  \e[36mMiniShell\e[0m ");
-		if (ctrl_c)
-			param->exit_status = ctrl_c;
-		if (!buffer)
+		if (ft_minishell(param))
 			break ;
-		syntax_error = parser(buffer, &(param->ast));
-		if (syntax_error)
-			continue ;
-		param->head = param->ast;
-		if (param->ast)
-		{
-			// print_ast(param->ast);
-			if (!heredoc_fork(param))
-			{
-				heredoc_fetch(param, 1);
-				param->ast = param->head;
-				param->exit_status = execute(param);
-			}
-		}
-		param->head = clean_ast(param->head);
-		param->ast = NULL;
 	}
-	return (clean_param(param), ft_putstr_fd("exit\n", 2), 1);
+	exit_status = param->exit_status;
+	clean_param(param);
+	ft_putstr_fd("exit\n", 2);
+	return (exit_status);
 }

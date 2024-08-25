@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "execution.h"
 
-char	*strjoin_optclean(char *s1, char *s2, int flag)
+char	*join_optclean(char *s1, char *s2, int flag)
 {
 	int		i;
 	char	*join;
