@@ -46,9 +46,9 @@ t_env	*env_init(char **env)
 	tmp->value = env_fetch(dup, tmp);
 	head = tmp;
 	env++;
-	while(*env)
+	while (*env)
 	{
-		tmp->next = malloc(sizeof(t_env));      /////need cleaning
+		tmp->next = malloc(sizeof(t_env));
 		dup = ft_strdup(*env);
 		tmp->next->name = dup;
 		tmp->next->value = env_fetch(dup, tmp->next);
@@ -64,7 +64,7 @@ char	**env_default(void)
 	char	**env;
 
 	env = malloc(sizeof(char *) * 5);
-	env[0] = strjoin_optclean("PWD=", getcwd(NULL, 0), 2);
+	env[0] = join_optclean("PWD=", getcwd(NULL, 0), 2);
 	env[1] = ft_strdup("SHLVL=0");
 	env[2] = ft_strdup("_=./minishell");
 	env[3] = ft_strdup("OLDPWD");
@@ -76,7 +76,7 @@ char	**env_dup(char **env)
 {
 	char	**new_env;
 	int		i;
-	
+
 	i = 0;
 	while (env[i])
 		i++;

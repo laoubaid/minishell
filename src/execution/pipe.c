@@ -111,20 +111,20 @@ int	closexwait(int **fd, int count, int pid)
 	return (1);
 }
 
-int	handle_pipe(t_pipe *pip, char **env, int i)
+int	handle_pipe(t_pipe *pip, char **env, int i, int pid)
 {
 	int	**fd;
 	int	count;
-	int	pid;
 
 	fd = ft_pipe_allocatexfree(pip, &count, 0);
 	while (++i < count)
 	{
-		cmd_signalhandler(pip->cmd->simple_cmd[0], pip->param->prog);
+		if (pip->cmd)
+			cmd_signalhandler(pip->cmd->simple_cmd[0], pip->param->prog);
 		if (i != count - 1 && pipe(fd[i]))
 			return (perror("pipe:"), closexwait(fd, count, pid));
 		pid = fork();
-		if (!pid)
+		if (!pid && pid != -1)
 		{
 			if (i == 0)
 				handle_cmd(pip, NULL, fd[i], env);

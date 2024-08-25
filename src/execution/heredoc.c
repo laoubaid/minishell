@@ -12,18 +12,15 @@
 
 #include "minishell.h"
 #include "execution.h"
+#include "parser.h"
 
-char	*join_str(char *str1, char *str2);
-int	join_expanded_key(char **str, char **current, t_param *param, int in);
 char	*heredoc_expand(char *str, t_param *param)
 {
-	int i;
-	int len;
+	int		len;
 	char	*exp;
 
-	i = 0;
-	exp = NULL;
 	len = 0;
+	exp = NULL;
 	while (str[len])
 	{
 		if (str[len] == '$')
@@ -44,50 +41,53 @@ char	*heredoc_expand(char *str, t_param *param)
 	return (exp);
 }
 
-char	*ft_getstr(t_param *param, char *limiter, int fd, int exp)
+char	*ft_getstr(char *limiter)
 {
 	char	*line;
 	char	*str;
 
 	line = NULL;
 	str = NULL;
-	limiter = strjoin_optclean(limiter, "\n", 1);
+	limiter = join_optclean(limiter, "\n", 1);
 	while (ft_strncmp(line, limiter, ft_strlen(line)) || (line && !line[0]))
 	{
 		if (line)
 		{
-			line = strjoin_optclean(line, "\n", 1);
-			str = strjoin_optclean(str, line, 1);
+			line = join_optclean(line, "\n", 1);
+			str = join_optclean(str, line, 1);
 		}
 		free(line);
 		line = readline("> ");
+		if (line && !line[0] && limiter[0] == '\n')
+			break ;
 		if (!line)
 		{
 			write(1, "warning: here-doc delimited by end-of-file\n", 44);
 			break ;
 		}
 	}
-	char *freetmp = str;
-	if (exp)
-	{
-		str = heredoc_expand(str, param);
-		free(freetmp);
-	}
-	write(fd, str, ft_strlen(str));
 	return (free(limiter), free(line), str);
 }
 
-char	*ft_heredoc(t_param *param, char *limiter, int num, int flag)
+char	*ft_heredoc(t_param *param, char *limiter, int num, int exp)
 {
 	char	*str;
+	char	*tmp;
 	int		fd;
 	char	*filename;
 
-	filename = strjoin_optclean("/tmp/hdoc", ft_itoa(num), 2);
+	filename = join_optclean("/tmp/hdoc", ft_itoa(num), 2);
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd == -1)
 		return (NULL);
-	str = ft_getstr(param, limiter, fd, flag);
+	str = ft_getstr(limiter);
+	tmp = str;
+	if (exp && str && str[0])
+	{
+		str = heredoc_expand(str, param);
+		free(tmp);
+	}
+	write(fd, str, ft_strlen(str));
 	free(str);
 	close(fd);
 	return (filename);

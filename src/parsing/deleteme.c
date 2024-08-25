@@ -116,7 +116,7 @@ void	print_ast(t_ast *ast)
 		printf("LPAREN\n");
 	else if (ast->type == WORD)
 		printf("WORD\n");
-	else if (ast->type == -1)
+	else if ((int)ast->type == -1)
 		printf("NULL(-1)\n");
 	if (ast->cmd)
 	{

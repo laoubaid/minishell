@@ -128,4 +128,6 @@ int		heredoc_handler(t_param *param, int num);
 char	*ft_heredoc(t_param *param, char *limiter, int num, int flag);
 void	redir_heredoc(t_param *param, int num);
 
+void	print_ast(t_ast *ast);
+
 #endif

@@ -13,9 +13,9 @@
 #include "minishell.h"
 #include "execution.h"
 
-void	redir_heredoc_fetch(t_param *param, int num)
+void	redir_heredoc_fetch(t_param *param, int n)
 {
-	t_redir *tmp;
+	t_redir	*tmp;
 	int		i;
 
 	i = 1;
@@ -27,7 +27,7 @@ void	redir_heredoc_fetch(t_param *param, int num)
 		if (tmp->redir_type == R_HEREDOC)
 		{
 			free(tmp->filename);
-			tmp->filename = strjoin_optclean("/tmp/hdoc", ft_itoa(num * 100 + i), 2);
+			tmp->filename = join_optclean("/tmp/hdoc", ft_itoa(n * 100 + i), 2);
 			tmp->redir_type = R_STD_IN;
 			i++;
 		}
@@ -95,7 +95,7 @@ int	heredoc_handler(t_param *param, int num)
 
 void	redir_heredoc(t_param *param, int num)
 {
-	t_redir *tmp;
+	t_redir	*tmp;
 	int		i;
 
 	i = 1;
@@ -107,7 +107,8 @@ void	redir_heredoc(t_param *param, int num)
 	{
 		if (tmp->redir_type == R_HEREDOC)
 		{
-			tmp->filename = ft_heredoc(param, tmp->filename, (num * 100 + i), tmp->expand);
+			tmp->filename = ft_heredoc(param, tmp->filename, \
+			(num * 100 + i), tmp->expand);
 			tmp->redir_type = R_STD_IN;
 			i++;
 		}

@@ -79,7 +79,7 @@ t_pipe	*pipeline(t_ast *ast, t_param *param)
 	return (pip);
 }
 
-int openfiles(t_param *param)
+int	openfiles(t_param *param)
 {
 	int	exit_status;
 
@@ -93,7 +93,7 @@ int openfiles(t_param *param)
 	wait(&exit_status);
 	if (WIFEXITED(exit_status))
 		return (WEXITSTATUS(exit_status));
-	return (1); 
+	return (1);
 }
 
 int	execute(t_param *param)
@@ -107,7 +107,7 @@ int	execute(t_param *param)
 	else if (param->ast->type == PIPE)
 	{
 		pip = pipeline(param->ast, param);
-		param->exit_status = handle_pipe(pip, param->env_arr, -1);
+		param->exit_status = handle_pipe(pip, param->env_arr, -1, 0);
 		ft_pipe_allocatexfree(pip, NULL, 1);
 	}
 	else if (param->ast->type == LPAREN)
@@ -115,7 +115,9 @@ int	execute(t_param *param)
 	else if (param->ast->cmd->simple_cmd[0])
 	{
 		error = expander(param);
-		if (!error)
+		if (!param->ast->cmd->simple_cmd[0])
+			param->exit_status = 0;
+		else if (!error)
 			param->exit_status = command_execution(param);
 	}
 	else

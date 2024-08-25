@@ -15,11 +15,16 @@
 
 void	cmd_execve(char **cmd, char **env, t_redir *redir)
 {
-	int exit_status;
+	int	exit_status;
 
-	if (!check_if_path(cmd[0]) && getpath(env, "PATH=") != -1)
-		path(&cmd, (env)[getpath(env, "PATH=")]);
-	redirecte(redir);
+	if (ft_strncmp(cmd[0], ".", 2) && ft_strncmp(cmd[0], "..", 3))
+	{
+		if (!check_if_path(cmd[0]) && getpath(env, "PATH=") != -1)
+			path(&cmd, (env)[getpath(env, "PATH=")]);
+	}
+	exit_status = redirecte(redir);
+	if (exit_status)
+		exit(exit_status);
 	exit_status = execution_errors(cmd[0]);
 	if (exit_status)
 		exit(exit_status);
@@ -36,7 +41,7 @@ int	command_execution(t_param *param)
 	int		exit_status;
 
 	cmd = param->ast->cmd->simple_cmd;
-	set_last_arg(param, NULL, cmd);   //potontioal error
+	set_last_arg(param, NULL, cmd);
 	exit_status = builtins(param, param->ast->cmd);
 	if (exit_status != -1)
 		return (exit_status);

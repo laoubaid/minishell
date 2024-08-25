@@ -35,7 +35,7 @@ int 	openfiles(t_param *param);
 /* builtins functions */
 int		ft_pwd(t_param *param);
 int		ft_cd(t_param *param, t_cmd *cmd);
-int		ft_echo(char **, t_param *param);
+int		ft_echo(char **cmd);
 int		ft_unset(t_param *param, char **cmd);
 
 void	cmd_execve(char **cmd, char **env, t_redir *redir);
@@ -55,17 +55,18 @@ void	pipe_init(t_param *param, t_ast *ast, t_pipe *pip);
 int		**ft_pipe_allocatexfree(t_pipe *pip, int *n, int flag);
 int		closexwait(int **fd, int count, int pid);
 void	handle_cmd(t_pipe *pip, int *fdin, int *fdout, char **env);
-int		handle_pipe(t_pipe *pip, char **env, int i);
+int		handle_pipe(t_pipe *pip, char **env, int i, int pid);
 
 t_param	*param_init(char **env);
 
-char	*strjoin_optclean(char *s1, char *s2, int flag);
+char	*join_optclean(char *s1, char *s2, int flag);
 void	set_last_arg(t_param *param, char *str, char **arr);
 
 /* environement related functions*/
+char	*get_env(t_param *param, char *find);
 int		env_edit(t_param *param, char *find, char *value, int flag);
 void	print_variables(t_param *param);
-int		checkifvalid(char *str, int *idx);
+int		checkifvalid(char *str, int *idx, t_param *param);
 int		checkifexist(char *str, t_env *env, int *idx);
 char	*env_fetch(char *var, t_env *tmp);
 char	**recreate_env(t_env *env_list, char **env);
