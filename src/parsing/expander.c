@@ -126,7 +126,7 @@ int	expander(t_param *param)
 		|| clean_all_quotes(param))
 	{
 		clean_ast(param->head);
-		exit(EXIT_FAILURE);       // hada la yassih 3alijho
+		exit(EXIT_FAILURE);
 	}
 	return (0);
 }

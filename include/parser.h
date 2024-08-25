@@ -44,6 +44,6 @@ int		verify_grammar(t_token **token);
 int		grammar(t_token *token);
 void	*clean_cmd(t_cmd *cmd);
 void	*clean_ast(t_ast *ast);
-t_ast	*fill_branches(int	min_prec, t_token **token);
+t_ast	*fill_branches(int min_prec, t_token **token);
 
 #endif

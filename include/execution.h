@@ -18,7 +18,6 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 
-
 char	**split_all(char const *s, char c);
 char	**ft_free(char **ptr);
 
@@ -30,7 +29,7 @@ int		redirecte(t_redir *redir);
 /* execution paths related functions */
 t_pipe	*pipeline(t_ast *ast, t_param *param);
 int		subshell(t_param *param);
-int 	openfiles(t_param *param);
+int		openfiles(t_param *param);
 
 /* builtins functions */
 int		ft_pwd(t_param *param);
@@ -43,7 +42,6 @@ int		command_execution(t_param *param);
 
 int		builtins(t_param *param, t_cmd *cmd);
 int		execute(t_param *param);
-
 
 /* functions to handle file errors */
 int		check_if_path(char *cmd);
@@ -70,6 +68,5 @@ int		checkifvalid(char *str, int *idx, t_param *param);
 int		checkifexist(char *str, t_env *env, int *idx);
 char	*env_fetch(char *var, t_env *tmp);
 char	**recreate_env(t_env *env_list, char **env);
-
 
 #endif

@@ -36,11 +36,6 @@ char	*nq_ws_found(char ***expdd_arr, char *current, char *ws, int len)
 	return (current);
 }
 
-// this function takes the str we made so far and adds on it from the 
-// whitespaced str (that we made by expanding the string outside the 
-// quotes) and each time we encouter a whitespace the string get added 
-// to the array of strings then we start creating a new string after 
-// the whitespace
 char	*noquote_split(char ***expdd_arr, char *current, char *whitespaced)
 {
 	int	len;
@@ -56,7 +51,6 @@ char	*noquote_split(char ***expdd_arr, char *current, char *whitespaced)
 		whitespaced += len;
 		len = 0;
 	}
-	// case whitespace found
 	current = nq_ws_found(expdd_arr, current, whitespaced, len);
 	return (current);
 }

@@ -17,15 +17,14 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-// # include "parser.h"
 # include <unistd.h>
 # include <limits.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
-#include <dirent.h>
+# include <dirent.h>
 
-// parsing enums
+/* enumerations */
 typedef enum e_type
 {
 	WORD,
@@ -40,7 +39,7 @@ typedef enum e_type
 	LPAREN
 }	t_type;
 
-typedef	enum e_redir_type
+typedef enum e_redir_type
 {
 	R_STD_IN,
 	R_STD_OUT,
@@ -73,7 +72,7 @@ typedef struct s_cmd
 	t_redir	*redirs;
 }	t_cmd;
 
-typedef	struct s_ast
+typedef struct s_ast
 {
 	t_type			type;
 	struct s_ast	*left;
@@ -98,9 +97,9 @@ typedef struct s_param
 	int		exit_status;
 	t_ast	*head;
 	char	*prog;
-}   t_param;
+}	t_param;
 
-typedef struct s_pipe  
+typedef struct s_pipe
 {
 	t_cmd			*cmd;
 	t_ast			*node;
@@ -127,7 +126,5 @@ int		heredoc_fetch(t_param *param, int num);
 int		heredoc_handler(t_param *param, int num);
 char	*ft_heredoc(t_param *param, char *limiter, int num, int flag);
 void	redir_heredoc(t_param *param, int num);
-
-void	print_ast(t_ast *ast);
 
 #endif
