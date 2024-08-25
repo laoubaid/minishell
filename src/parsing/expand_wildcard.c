@@ -89,7 +89,11 @@ int	matched_names(char ***arr, char *str)
 	dir = opendir(".");
 	match_found = 0;
 	if (!dir)
-		return (1);
+	{
+		if (cpy_and_append(arr, str))
+			return (1);
+		return (0);
+	}
 	s_dir = readdir(dir);
 	while (s_dir)
 	{
