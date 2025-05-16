@@ -16,7 +16,28 @@ A simple Unix shell implemented in C, replicating core functionalities of Bash. 
 
 This project uses the GNU Readline library for interactive input and command history.
 
+More on Readline: [official documentation](https://tiswww.case.edu/php/chet/readline/rltop.html).
+
 Install it (on Fedora) with:
 
 ```bash
 sudo dnf install readline-devel
+```
+
+## ⚙️ Compilation
+
+To build the project, run:
+
+```bash
+make
+```
+
+## ▶️ Usage
+
+After compilation:
+
+```bash
+./minishell
+```
+
+This project was developed as part of the 42 school curriculum by laoubaid.
